@@ -5,7 +5,12 @@ import React, {
   ReactNode,
   useEffect,
 } from 'react';
-import {AuthContextData, AuthData, ApiCallParams} from '../types/AuthTypes';
+import {
+  AuthContextData,
+  AuthData,
+  AuthRegisterData,
+  ApiCallParams,
+} from '../types/AuthTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import axios from 'axios';
@@ -18,10 +23,20 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   //The loading part will be explained in the persist step session
   const [loading, setLoading] = useState(true);
 
-  const register = async ({username, password}: AuthData) => {
+  const register = async ({
+    username,
+    password,
+    confirmPassword,
+  }: AuthRegisterData) => {
     if (username === '' || password === '') {
       throw new Error('Username and password are required');
     }
+
+    if (password !== confirmPassword) {
+      throw new Error('Passwords do not match');
+    }
+
+    console.log('Registering user', username, password, confirmPassword);
 
     //...call service and setAuthData
     const _authData: AuthData = {
