@@ -20,7 +20,7 @@ function Login(): React.JSX.Element {
         value={username}
         onChangeText={e => setUsername(e)}
         leftIcon={
-          <Feather name="user" size={24} color={theme.colors.primary} />
+          <Feather name="user" size={24} color={theme.colors.light.primary} />
         }
       />
       <CustomTextInput
@@ -28,11 +28,11 @@ function Login(): React.JSX.Element {
         value={password}
         onChangeText={e => setPassword(e)}
         leftIcon={
-          <Feather name="lock" size={24} color={theme.colors.primary} />
+          <Feather name="lock" size={24} color={theme.colors.light.primary} />
         }
         secureTextEntry={true}
         isPassword={true}
-        iconColor={theme.colors.primary}
+        iconColor={theme.colors.light.primary}
       />
     </View>
   );
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.light.background,
   },
   logo: {
     width: 200,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 20,
 
-    shadowColor: theme.colors.tertiary,
+    shadowColor: theme.colors.light.tertiary,
     shadowOffset: {
       width: 0,
       height: 2,

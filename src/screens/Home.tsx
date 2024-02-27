@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
-import {Text} from 'react-native-elements';
-import theme from '../../theme';
-import MainItemBox from '../components/MainPage/MainItemBox';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
@@ -28,16 +25,7 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <>
-          <FlatList
-            data={data}
-            renderItem={({item}) => <MainItemBox item={item} />}
-          />
-        </>
-      )}
+      <></>
     </View>
   );
 };
@@ -46,6 +34,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  search: {height: 40, margin: 12, borderWidth: 1, padding: 10},
 });
 
 export default Home;

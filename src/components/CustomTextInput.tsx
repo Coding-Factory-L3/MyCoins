@@ -85,11 +85,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: theme.colors.secondary,
+    borderColor: theme.colors.light.secondary,
   },
   focused: {
-    borderColor: theme.colors.primary,
-    shadowColor: theme.colors.tertiary,
+    borderColor: theme.colors.light.primary,
+    shadowColor: theme.colors.light.tertiary,
     shadowOffset: {
       width: 0,
       height: 0,
