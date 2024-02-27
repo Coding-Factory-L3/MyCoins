@@ -93,20 +93,22 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   }: ApiCallParams): Promise<void> {
     const userData = await AsyncStorage.getItem('@UserData');
 
-    if (!userData) {
-      return Promise.reject('User not authenticated');
-    }
+    // if (!userData) {
+    //   return Promise.reject('User not authenticated');
+    // }
 
-    const parsedUserData = JSON.parse(userData);
+    // const parsedUserData = JSON.parse(userData);
 
-    if (!parsedUserData.token) {
-      return Promise.reject('User not authenticated');
-    }
+    // if (!parsedUserData.token) {
+    //   return Promise.reject('User not authenticated');
+    // }
 
     //...call service and setAuthData
     if (method === 'GET') {
       return axios
-        .get(url, {headers})
+        .get(`${url}&x_cg_demo_api_key=${process.env.COINGECKO_API_KEY}`, {
+          headers,
+        })
         .then(response => {
           return response.data;
         })

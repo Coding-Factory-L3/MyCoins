@@ -1,16 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
-import {useAuth} from '../contexts/AuthContext';
-import {Text} from 'react-native-elements';
-import theme from '../../theme';
-import MainItemBox from '../components/MainPage/MainItemBox';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
@@ -35,24 +24,7 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <>
-          <ScrollView>
-            <Text
-              h1
-              style={{textAlign: 'center', color: theme.colors?.light.primary}}>
-              MyCoin
-            </Text>
-            <TextInput placeholder="Rechercher .." style={styles.search} />
-            <FlatList
-              data={data}
-              renderItem={({item}) => <MainItemBox item={item} />}
-            />
-          </ScrollView>
-        </>
-      )}
+      <></>
     </View>
   );
 };
