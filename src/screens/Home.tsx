@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, TextInput, View} from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
+import MainItemBox from '../components/MainPage/MainItemBox';
+import {Text} from 'react-native-elements';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
@@ -12,7 +14,7 @@ const Home: React.FC = () => {
       try {
         await makeApiCall({
           method: 'GET',
-          url: 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en',
+          url: 'https://api.coingecko.com/api/v3/search/trending',
         }).then(response => {
           setData(response);
           setLoading(false);
@@ -25,7 +27,17 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <></>
+      <Text h1>My coin</Text>
+      <TextInput style={styles.search} placeholder="Search" />
+      <FlatList
+        style={styles.list}
+        horizontal={true}
+        data={data}
+        keyExtractor={(item: any) => item.id}
+        renderItem={({item}) => {
+          return <MainItemBox item={item} />;
+        }}
+      />
     </View>
   );
 };
@@ -35,6 +47,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   search: {height: 40, margin: 12, borderWidth: 1, padding: 10},
+  list: {
+    paddingLeft: 10,
+  },
 });
 
 export default Home;
