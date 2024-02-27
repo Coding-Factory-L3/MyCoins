@@ -45,22 +45,23 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     //Persist the data in the Async Storage
     //to be recovered in the next user session.
     AsyncStorage.setItem('@UserData', JSON.stringify(_authData));
+    setAuthData(_authData);
   };
 
   const signIn = async ({username, password}: AuthData) => {
     if (username === '' || password === '') {
-      throw new Error('Username and password are required');
+      return Promise.reject('Username and password are required');
     }
 
     const userData = await AsyncStorage.getItem('@UserData');
     const parsedUserData = JSON.parse(userData || '{}');
 
-    if (
-      parsedUserData.username !== username ||
-      parsedUserData.password !== password
-    ) {
-      throw new Error('Username or password invalid');
-    }
+    // if (
+    //   parsedUserData.username !== username ||
+    //   parsedUserData.password !== password
+    // ) {
+    //   return Promise.reject('Invalid username or password');
+    // }
 
     //...call service and setAuthData
     const _authData: AuthData = {
@@ -72,6 +73,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     //Persist the data in the Async Storage
     //to be recovered in the next user session.
     AsyncStorage.setItem('@AuthData', JSON.stringify(_authData));
+    setAuthData(_authData);
   };
 
   const signOut = async () => {
@@ -104,7 +106,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     url,
     headers,
   }: ApiCallParams): Promise<void> {
-    const userData = await AsyncStorage.getItem('@UserData');
+    // const userData = await AsyncStorage.getItem('@UserData');
 
     // if (!userData) {
     //   return Promise.reject('User not authenticated');

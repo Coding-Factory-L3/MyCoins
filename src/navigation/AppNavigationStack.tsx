@@ -6,7 +6,7 @@ const Stack = createNativeStackNavigator();
 
 const AppStack: React.FC = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator screenOptions={{headerShown: false, animation: 'flip'}}>
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
   );

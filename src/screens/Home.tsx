@@ -1,31 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import CustomButton from '../components/CustomButton';
 import {useAuth} from '../contexts/AuthContext';
 
 const Home: React.FC = () => {
-  const {makeApiCall} = useAuth();
-  const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        await makeApiCall({
-          method: 'GET',
-          url: 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en',
-        }).then(response => {
-          setData(response);
-          setLoading(false);
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
+  const {signOut} = useAuth();
 
   return (
     <View style={styles.container}>
-      <></>
+      <CustomButton title="Sign Out" onPress={signOut} />
     </View>
   );
 };
@@ -34,7 +17,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  search: {height: 40, margin: 12, borderWidth: 1, padding: 10},
 });
 
 export default Home;

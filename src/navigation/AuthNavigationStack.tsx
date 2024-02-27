@@ -6,7 +6,7 @@ const Stack = createNativeStackNavigator();
 
 const AuthStack: React.FC = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator screenOptions={{headerShown: false, animation: 'flip'}}>
       <Stack.Screen name="Login" component={Login} />
     </Stack.Navigator>
   );
