@@ -16,7 +16,8 @@ export const Router: React.FC = () => {
 
   return (
     <NavigationContainer>
-      {authData?.token ? <AppStack /> : <AuthStack />}
+      {/* {authData?.token ? <AppStack /> : <AuthStack />} */}
+      <AppStack />
     </NavigationContainer>
   );
 };
