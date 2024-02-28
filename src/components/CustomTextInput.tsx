@@ -52,6 +52,7 @@ function CustomTextInput({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         errorStyle={{display: 'none'}}
+        autoCapitalize="none"
       />
 
       {isPassword && (

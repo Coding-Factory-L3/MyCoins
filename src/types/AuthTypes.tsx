@@ -2,21 +2,25 @@ export type AuthContextData = {
   authData?: AuthData;
   loading: boolean;
   register(data: AuthRegisterData): Promise<void>;
-  signIn(data: AuthData): Promise<void>;
-  signOut(): void;
+  signIn(data: AuthLoginData): Promise<void>;
+  logout(): void;
   makeApiCall(params: ApiCallParams): Promise<void>;
 };
 
 export type AuthData = {
   token?: string;
   username: string;
-  password: string;
 };
 
 export type AuthRegisterData = {
   username: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
+};
+
+export type AuthLoginData = {
+  username: string;
+  password: string;
 };
 
 export type ApiCallParams = {

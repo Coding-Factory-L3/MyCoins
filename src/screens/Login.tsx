@@ -6,7 +6,6 @@ import theme from '../../theme';
 import {useAuth} from '../contexts/AuthContext';
 import CustomButton from '../components/CustomButton';
 import {Text} from 'react-native-elements';
-import useToast from '../hooks/useToast';
 
 function Login(): React.JSX.Element {
   const [username, setUsername] = useState('');
@@ -14,21 +13,14 @@ function Login(): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
 
   const {signIn} = useAuth();
-  const {showToast} = useToast();
 
   const handleRegister = useCallback(async () => {
     try {
-      await signIn({username, password}).then(() => {
-        showToast({
-          type: 'success',
-          text1: 'Welcome!',
-          text2: `Welcome back ${username}`,
-        });
-      });
+      await signIn({username, password});
     } catch (err) {
       setError(String(err));
     }
-  }, [username, password, signIn, showToast]);
+  }, [username, password, signIn]);
 
   useEffect(() => {
     if (error) {

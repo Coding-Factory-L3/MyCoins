@@ -2,13 +2,17 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import {useAuth} from '../contexts/AuthContext';
+import {Text} from 'react-native-elements';
 
 const Home: React.FC = () => {
-  const {signOut} = useAuth();
+  const {logout, authData} = useAuth();
 
   return (
     <View style={styles.container}>
-      <CustomButton title="Sign Out" onPress={signOut} />
+      <Text>
+        Welcome {authData?.username}! You are now logged in to the app.
+      </Text>
+      <CustomButton title="Sign Out" onPress={logout} />
     </View>
   );
 };
