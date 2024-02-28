@@ -8,7 +8,7 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    async () => {
       try {
         await makeApiCall({
           method: 'GET',
@@ -20,8 +20,8 @@ const Home: React.FC = () => {
       } catch (error) {
         console.error(error);
       }
-    })();
-  }, []);
+    };
+  });
 
   return (
     <View style={styles.container}>
