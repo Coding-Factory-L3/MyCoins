@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import CustomTextInput from '../components/CustomTextInput';
 import Feather from 'react-native-vector-icons/Feather';
@@ -13,7 +13,7 @@ function Register(): React.JSX.Element {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const onRegisterPress = async () => {
+  const onRegisterPress = useCallback(async () => {
     console.log('Register pressed');
     try {
       await register({username, password, confirmPassword});
@@ -27,7 +27,7 @@ function Register(): React.JSX.Element {
         setErrorMessage(error.message);
       }
     }
-  };
+  }, [username, password, confirmPassword, register]);
 
   return (
     <View style={styles.container}>
