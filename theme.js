@@ -6,6 +6,7 @@ export default {
       background: '#EBECF1',
       tertiary: '#A9A9C5',
       text: '#EBECF1',
+      error: '#FF0000',
     },
     dark: {
       primary: '#2B2B2B',
