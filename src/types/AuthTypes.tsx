@@ -7,12 +7,18 @@ export type AuthContextData = {
   makeApiCall(params: ApiCallParams): Promise<void>;
 };
 
+export type AuthInfoSave = {
+  username: string;
+  email: string;
+};
+
 export type AuthData = {
   token?: string;
   username: string;
 };
 
 export type AuthRegisterData = {
+  email: string;
   username: string;
   password: string;
   confirmPassword?: string;

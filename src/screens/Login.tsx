@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import CustomTextInput from '../components/CustomTextInput';
 import Feather from 'react-native-vector-icons/Feather';
 import theme from '../../theme';
@@ -7,7 +7,7 @@ import {useAuth} from '../contexts/AuthContext';
 import CustomButton from '../components/CustomButton';
 import {Text} from 'react-native-elements';
 
-function Login(): React.JSX.Element {
+function Login({navigation}: any): React.JSX.Element {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +64,11 @@ function Login(): React.JSX.Element {
           isPassword={true}
           iconColor={theme.colors.light.primary}
         />
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={{color: theme.colors.light.primary, textAlign: 'right'}}>
+            Don't have an account...
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <View>
@@ -84,7 +89,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: theme.colors.light.background,
     justifyContent: 'space-between',
-    marginVertical: 20,
+    paddingVertical: 20,
   },
   logo: {
     width: 200,

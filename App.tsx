@@ -10,12 +10,13 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Router} from './src/navigation/router';
 import {AuthProvider} from './src/contexts/AuthContext';
 import Toast from 'react-native-toast-message';
+import theme from './theme';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? Colors.darker : theme.colors.light.background,
   };
 
   return (

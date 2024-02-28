@@ -12,6 +12,7 @@ import {
   ApiCallParams,
   AuthRegisterData,
   AuthLoginData,
+  AuthInfoSave,
 } from '../types/AuthTypes';
 import uuid from 'react-native-uuid';
 import axios from 'axios';
@@ -64,12 +65,13 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const {showToast} = useToast();
 
   const register = async ({
+    email,
     username,
     password,
     confirmPassword,
   }: AuthRegisterData) => {
-    if (username === '' || password === '') {
-      throw new Error('Username and password are required');
+    if (email === '' || username === '' || password === '') {
+      throw new Error('Email, username and password are required');
     }
 
     if (password !== confirmPassword) {
@@ -77,20 +79,21 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
 
     try {
-      const _authUser = await createUserWithEmailAndPassword(
-        auth,
-        username,
-        password,
-      );
+      await createUserWithEmailAndPassword(auth, email, password);
 
-      const _userRef = doc(collection(db, 'users'), _authUser.user.uid);
+      const _userRef = doc(collection(db, 'users'), email);
 
-      const _authData: AuthRegisterData = {
+      const _authData: AuthInfoSave = {
+        email,
         username,
-        password,
       };
 
-      await setDoc(_userRef, _authData);
+      await setDoc(_userRef, _authData).then(() => {
+        showToast({
+          type: 'success',
+          text1: `Welcome ${username}`,
+        });
+      });
     } catch (error) {
       console.log(error);
       return Promise.reject('Error on register');
@@ -137,6 +140,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   async function loadStorageData({email}: {email: string}) {
     try {
       const _unsub = onSnapshot(doc(db, 'users', email), docSnap => {
+        console.log(docSnap?.data());
         const _authData: AuthData = {
           username: docSnap?.data()?.username || '',
           token: String(uuid.v4()),
@@ -145,6 +149,8 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         setAuthData(_authData);
         setUnsubscribe(() => _unsub);
         setLoading(false);
+
+        console.log('User data loaded');
 
         return Promise.resolve(_authData);
       });
@@ -221,7 +227,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     );
 
     return () => authUnsubscribe();
-  }, [logout]);
+  }, []);
 
   return (
     //This component will be used to encapsulate the whole App,
