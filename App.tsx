@@ -9,12 +9,15 @@ import {
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Router} from './src/navigation/router';
 import {AuthProvider} from './src/contexts/AuthContext';
+import theme from './theme';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode
+      ? theme.colors.dark.background
+      : theme.colors.light.background,
   };
 
   return (

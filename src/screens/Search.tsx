@@ -62,9 +62,10 @@ function Search(): React.JSX.Element {
     <View style={styles.container}>
       <View style={styles.searchInput}>
         <CustomTextInput
+          autoComplete="off"
           placeholder="Search coins..."
           value={searchValue}
-          onChangeText={e => setSearchValue(e.toLowerCase())}
+          onChangeText={e => setSearchValue(e)}
           leftIcon={
             <Feather
               name="search"

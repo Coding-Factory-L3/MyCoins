@@ -4,7 +4,7 @@ export type AuthContextData = {
   register(data: AuthRegisterData): Promise<void>;
   signIn(data: AuthData): Promise<void>;
   signOut(): void;
-  makeApiCall(params: ApiCallParams): Promise<void>;
+  makeApiCall(params: ApiCallParams): Promise<any>;
 };
 
 export type AuthData = {
@@ -20,8 +20,11 @@ export type AuthRegisterData = {
 };
 
 export type ApiCallParams = {
-  method: 'GET';
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   url: string;
   data?: any;
   headers?: any;
+};
+export type ApiResponse<T> = {
+  data: T;
 };
