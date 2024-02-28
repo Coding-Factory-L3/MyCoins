@@ -116,6 +116,18 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
           console.log(error);
           return Promise.reject('Error on GET request');
         });
+    } else if (method === 'POST') {
+      return axios
+        .post(`${url}&x_cg_demo_api_key=${process.env.COINGECKO_API_KEY}`, {
+          headers,
+        })
+        .then(response => {
+          return response.data;
+        })
+        .catch(error => {
+          console.log(error);
+          return Promise.reject('Error on POST request');
+        });
     }
   }
 
