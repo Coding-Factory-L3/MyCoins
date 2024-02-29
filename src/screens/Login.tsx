@@ -46,11 +46,11 @@ function Login({navigation}: any): React.JSX.Element {
         <Text style={styles.title}>Login</Text>
 
         <CustomTextInput
-          placeholder="Username"
+          placeholder="Email"
           value={username}
           onChangeText={e => setUsername(e)}
           leftIcon={
-            <Feather name="user" size={24} color={theme.colors.light.primary} />
+            <Feather name="mail" size={24} color={theme.colors.light.primary} />
           }
         />
         <CustomTextInput
