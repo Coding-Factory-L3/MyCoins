@@ -1,43 +1,33 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
 
 interface MainItemBoxProps {
   item: MainItem;
-  onPress?: () => void;
 }
 
 interface MainItem {
-  image: string | undefined;
   id: string;
   name: string;
   symbol: string;
 }
 
-const MainItemBox: React.FC<MainItemBoxProps> = ({
-  item,
-  onPress,
-}: MainItemBoxProps) => {
+const ListNft: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image source={{uri: item.image}} style={styles.image} />
+    <View style={styles.card}>
       <View style={styles.details}>
         <Text style={styles.id}>{item.id}</Text>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.symbol}>{item.symbol}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   card: {
     flexDirection: 'row',
     height: 200,
-
     alignItems: 'center',
     backgroundColor: '#213056',
     borderRadius: 10,
@@ -62,7 +52,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
   },
@@ -71,26 +61,11 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 5,
   },
-  price: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007bff',
-    marginBottom: 5,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: '#666666',
-  },
+
   id: {
     fontSize: 12,
     color: '#ffffff',
   },
 });
 
-export default MainItemBox;
+export default ListNft;

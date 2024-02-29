@@ -14,6 +14,8 @@ interface CustomTextInputProps {
   secureTextEntry?: boolean | false;
   isPassword?: boolean;
   iconColor?: string;
+  autoComplete?: any;
+  autoCorrect?: boolean | false;
 }
 
 function CustomTextInput({
@@ -25,6 +27,8 @@ function CustomTextInput({
   secureTextEntry = false,
   isPassword = false,
   iconColor,
+  autoComplete,
+  autoCorrect = false,
 }: CustomTextInputProps): React.ReactElement {
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(
@@ -51,6 +55,8 @@ function CustomTextInput({
         leftIcon={leftIcon}
         rightIcon={rightIcon}
         secureTextEntry={isPasswordVisible}
+        autoComplete={autoComplete}
+        autoCorrect={autoCorrect}
         inputContainerStyle={{
           borderBottomWidth: 0,
           width: 'auto',

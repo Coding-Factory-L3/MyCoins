@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
+import theme from '../../theme';
 import {useTheme} from '../hooks/useTheme';
 
 interface CustomButtonProps {
@@ -51,7 +52,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-
     textAlign: 'center',
     padding: 10,
     fontWeight: '600',
