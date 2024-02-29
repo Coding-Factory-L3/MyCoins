@@ -16,13 +16,14 @@ import ModalCoinContent from '../components/MainPage/ModalCoinContent';
 import ListTrending from '../components/MainPage/ListTrending';
 import {useTheme} from '../hooks/useTheme';
 import {ModalContent} from '../components/MainPage/ModalCoinContent';
+import Feather from 'react-native-vector-icons/Feather';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
-  const {currentTheme} = useTheme();
+  const {currentTheme, toggleTheme} = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,17 +111,38 @@ const Home: React.FC = () => {
   return (
     <View
       style={{...styles.container, backgroundColor: currentTheme.background}}>
-      <Text h1 style={{...styles.titre, color: currentTheme.text}}>
-        Marketplace
-      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Feather name="home" size={25} color={currentTheme.switch} />
+          <Text
+            style={{...styles.titre, color: currentTheme.text, fontSize: 26}}>
+            Marketplace
+          </Text>
+        </View>
+        <TouchableOpacity>
+          <Feather
+            name="sun"
+            size={25}
+            color={currentTheme.switch}
+            onPress={toggleTheme}
+          />
+        </TouchableOpacity>
+      </View>
 
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <>
-          <ScrollView>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{paddingBottom: 100}}>
             <View style={styles.row}>
-              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+              <Text style={{...styles.titre, color: currentTheme.text}}>
                 Popular NFT
               </Text>
               <TouchableOpacity>
@@ -132,7 +154,6 @@ const Home: React.FC = () => {
               </TouchableOpacity>
             </View>
             <FlatList
-              style={styles.list}
               horizontal={true}
               data={data.trending}
               keyExtractor={(item: any) => item.id}
@@ -150,7 +171,7 @@ const Home: React.FC = () => {
             />
 
             <View style={styles.row}>
-              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+              <Text style={{...styles.titre, color: currentTheme.text}}>
                 Popular coins
               </Text>
               <TouchableOpacity>
@@ -180,7 +201,7 @@ const Home: React.FC = () => {
             />
 
             <View style={styles.row}>
-              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+              <Text style={{...styles.titre, color: currentTheme.text}}>
                 Exchanges
               </Text>
               <TouchableOpacity>
@@ -215,12 +236,13 @@ const Home: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 10,
   },
-  list: {
-    paddingLeft: 10,
-  },
+
   titre: {
     margin: 10,
+    fontFamily: 'Poppins-Medium',
+    fontSize: 20,
   },
   row: {
     flexDirection: 'row',
