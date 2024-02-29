@@ -100,21 +100,19 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
   };
 
-  const signIn = async ({username, password}: AuthLoginData) => {
-    if (username === '' || password === '') {
-      return Promise.reject('Username and password are required');
+  const signIn = async ({email, password}: AuthLoginData) => {
+    if (email === '' || password === '') {
+      return Promise.reject('Email and password are required');
     }
 
     try {
-      await signInWithEmailAndPassword(auth, username, password).then(
-        async () => {
-          const data = await getAuthData({email: username});
-          showToast({
-            type: 'success',
-            text1: `Welcome back ${data?.username}`,
-          });
-        },
-      );
+      await signInWithEmailAndPassword(auth, email, password).then(async () => {
+        const data = await getAuthData({email: email});
+        showToast({
+          type: 'success',
+          text1: `Welcome back ${data?.username}`,
+        });
+      });
     } catch (error) {
       console.log(error);
       showToast({

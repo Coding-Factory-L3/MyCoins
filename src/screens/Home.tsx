@@ -3,9 +3,11 @@ import {StyleSheet, View} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import {useAuth} from '../contexts/AuthContext';
 import {Text} from 'react-native-elements';
+import useCurrencyByLocation from '../hooks/useLocation';
 
 const Home: React.FC = () => {
   const {logout, authData} = useAuth();
+  const currency = useCurrencyByLocation();
 
   return (
     <View style={styles.container}>

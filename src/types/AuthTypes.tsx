@@ -25,7 +25,7 @@ export type AuthRegisterData = {
 };
 
 export type AuthLoginData = {
-  username: string;
+  email: string;
   password: string;
 };
 
