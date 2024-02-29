@@ -18,6 +18,10 @@ interface ThemeColors {
     inactive: string;
     shadow?: string;
   };
+  favorite: {
+    active: string;
+    inactive: string;
+  };
 }
 
 interface ThemeConfig {
@@ -42,7 +46,7 @@ const defaultThemeConfig: ThemeConfig = {
       tertiary: '#A9A9C5',
       text: '#1C1C1C',
       error: '#FF0000',
-      switch: '#1C1C1C',
+      switch: '#333252',
       textButton: '#EBECF1',
 
       bottomTab: {
@@ -50,6 +54,11 @@ const defaultThemeConfig: ThemeConfig = {
         active: '#EBECF1',
         inactive: '#908DB8',
         shadow: '#333252',
+      },
+
+      favorite: {
+        active: '#FF0000',
+        inactive: '#333252',
       },
     },
     dark: {
@@ -67,6 +76,11 @@ const defaultThemeConfig: ThemeConfig = {
         active: '#EBECF1',
         inactive: '#4B4B4B',
         shadow: '#EBECF1',
+      },
+
+      favorite: {
+        active: '#FF0000',
+        inactive: '#EBECF1',
       },
     },
   },

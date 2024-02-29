@@ -1,7 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import {View, Pressable, Dimensions, StyleSheet} from 'react-native';
+import {
+  View,
+  Pressable,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useTheme} from '../hooks/useTheme';
 
@@ -47,6 +53,18 @@ const NavigationIcon = ({route, isFocused}: any) => {
           }
         />
       );
+    case 'Profile':
+      return (
+        <Feather
+          name="user"
+          size={25}
+          color={
+            isFocused
+              ? currentTheme.bottomTab.active
+              : currentTheme.bottomTab.inactive
+          }
+        />
+      );
     default:
       return (
         <Feather
@@ -63,7 +81,7 @@ const NavigationIcon = ({route, isFocused}: any) => {
 };
 
 const TabBar = ({state, descriptors, navigation}: any) => {
-  const {currentTheme} = useTheme();
+  const {currentTheme, toggleTheme} = useTheme();
 
   return (
     <View
@@ -101,9 +119,12 @@ const TabBar = ({state, descriptors, navigation}: any) => {
             key={index}
             style={[
               styles.mainItemContainer,
-              //   {backgroundColor: currentTheme.secondary},
+              {
+                borderRightWidth: route.name === 'Profile' ? 2 : 0,
+                borderRightColor: currentTheme.bottomTab.inactive,
+              },
             ]}>
-            <Pressable
+            <TouchableOpacity
               onPress={onPress}
               style={{
                 backgroundColor: isFocused
@@ -120,10 +141,15 @@ const TabBar = ({state, descriptors, navigation}: any) => {
                 }}>
                 <NavigationIcon route={label} isFocused={isFocused} />
               </View>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         );
       })}
+      <TouchableOpacity
+        onPress={toggleTheme}
+        style={[styles.mainItemContainer]}>
+        <Feather name="sun" size={25} color={currentTheme.switch} />
+      </TouchableOpacity>
     </View>
   );
 };

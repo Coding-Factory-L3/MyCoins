@@ -24,7 +24,7 @@ const Home: React.FC = () => {
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
-  const {currentTheme, toggleTheme} = useTheme();
+  const {currentTheme} = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +44,7 @@ const Home: React.FC = () => {
           }),
         ];
 
-        await Promise.all(apiCalls).then(res => {
+        await Promise.all(apiCalls).then((res: any) => {
           setData({crypto: res[0], nft: res[1], trending: res[2].nfts});
           setLoading(false);
         });
@@ -105,33 +105,18 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  const onFavoritePress = (id: string) => {
-    console.log('ID de la carte:', id);
-  };
-
   return (
     <View
       style={{...styles.container, backgroundColor: currentTheme.background}}>
-      <View style={styles.row}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Feather name="home" size={25} color={currentTheme.switch} />
-          <Text
-            style={{...styles.titre, color: currentTheme.text, fontSize: 26}}>
-            Marketplace
-          </Text>
-        </View>
-        <TouchableOpacity>
-          <Feather
-            name="sun"
-            size={25}
-            color={currentTheme.switch}
-            onPress={toggleTheme}
-          />
-        </TouchableOpacity>
+      <View style={styles.headerRow}>
+        <Feather name="home" size={25} color={currentTheme.switch} />
+        <Text style={{...styles.titre, color: currentTheme.text, fontSize: 26}}>
+          Marketplace
+        </Text>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={currentTheme.primary} />
       ) : (
         <>
           <ScrollView
@@ -160,7 +145,6 @@ const Home: React.FC = () => {
                     onPress={() => {
                       getNft({id: item.id});
                     }}
-                    onFavoritePress={onFavoritePress}
                   />
                 );
               }}
@@ -189,7 +173,6 @@ const Home: React.FC = () => {
                     onPress={() => {
                       getCoin({id: item.id});
                     }}
-                    onFavoritePress={onFavoritePress}
                   />
                 );
               }}
@@ -212,9 +195,7 @@ const Home: React.FC = () => {
               data={data.nft}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
-                return (
-                  <ListExchange item={item} onFavoritePress={onFavoritePress} />
-                );
+                return <ListExchange item={item} />;
               }}
             />
           </ScrollView>
@@ -232,16 +213,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin: 10,
+  },
 
   titre: {
-    margin: 10,
     fontFamily: 'Poppins-Medium',
     fontSize: 20,
+    marginLeft: 10,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 15,
   },
 });
 

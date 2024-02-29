@@ -5,6 +5,7 @@ export type AuthContextData = {
   signIn(data: AuthLoginData): Promise<void>;
   logout(): void;
   makeApiCall(params: ApiCallParams): Promise<void>;
+  updateFavorite(data: any): Promise<void>;
 };
 
 export type AuthInfoSave = {
@@ -15,6 +16,12 @@ export type AuthInfoSave = {
 export type AuthData = {
   token?: string;
   username: string;
+  email: string;
+  favorites?: {
+    coins?: string[];
+    nfts?: string[];
+    exchanges?: string[];
+  };
 };
 
 export type AuthRegisterData = {

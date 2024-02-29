@@ -4,6 +4,7 @@ import Home from '../screens/Home';
 import Search from '../screens/Search';
 import TabBar from './TabBar';
 import Favorites from '../screens/Favorites';
+import Profile from '../screens/Profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,7 @@ const AppStack: React.FC = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Search" component={Search} />
       <Tab.Screen name="Favorites" component={Favorites} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };

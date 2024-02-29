@@ -1,12 +1,14 @@
-import React from 'react';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
-import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useTheme} from '../../hooks/useTheme';
+import {useAuth} from '../../contexts/AuthContext';
 
 interface MainItemBoxProps {
   item: MainItem;
-  onFavoritePress: (id: string) => void;
   onPress?: () => void;
+  isFavorite?: boolean;
 }
 
 interface MainItem {
@@ -22,24 +24,70 @@ interface MainItem {
 
 const ListTrending: React.FC<MainItemBoxProps> = ({
   item,
-  onFavoritePress,
   onPress,
 }: MainItemBoxProps) => {
+  const {currentTheme} = useTheme();
+  const {authData, updateFavorite} = useAuth();
+
+  const isItemInFavorites = useMemo(() => {
+    return authData?.favorites?.nfts?.includes(item.id);
+  }, [authData?.favorites?.nfts, item.id]);
+
+  const [isFavoriteState, setIsFavoriteState] = useState(isItemInFavorites);
+
+  const onFavoritePress = async (id: string) => {
+    await updateFavorite({key: 'nfts', id, value: !isFavoriteState}).then(
+      () => {
+        setIsFavoriteState(!isFavoriteState);
+      },
+    );
+  };
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image source={{uri: item.thumb}} style={styles.image} />
-      <View style={styles.details}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.symbol}>{item.symbol}</Text>
-        <Text style={styles.priceBtc}>Price BTC: {item.data.floor_price}</Text>
-        <Feather
+    <TouchableOpacity
+      style={[
+        styles.card,
+        {
+          backgroundColor: currentTheme.primary,
+          shadowColor: currentTheme.tertiary,
+        },
+      ]}
+      onPress={onPress}>
+      <TouchableOpacity
+        style={[
+          styles.icon,
+          {
+            shadowColor: currentTheme.tertiary,
+          },
+        ]}
+        onPress={async () => {
+          await onFavoritePress(item.id);
+        }}>
+        <AntDesign
           name="heart"
-          size={24}
-          color="#ffffff"
-          onPress={() => {
-            onFavoritePress(item.id);
-          }}
+          size={20}
+          color={
+            isFavoriteState
+              ? currentTheme.favorite.active
+              : currentTheme.favorite.inactive
+          }
         />
+      </TouchableOpacity>
+      <Image source={{uri: item.thumb}} style={styles.image} />
+
+      <View style={{padding: 10}}>
+        <Text
+          style={[styles.name, {color: currentTheme.textButton}]}
+          ellipsizeMode="tail"
+          numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={[styles.label, {color: currentTheme.textButton}]}>
+          {item.symbol}
+        </Text>
+        <Text style={[styles.label, {color: currentTheme.textButton}]}>
+          Price: {item.data.floor_price}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -47,15 +95,11 @@ const ListTrending: React.FC<MainItemBoxProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
     marginRight: 20,
+    minWidth: 250,
     height: 200,
-    alignItems: 'center',
-    backgroundColor: '#213056',
     borderRadius: 10,
-    padding: 20,
-    marginBottom: 10,
-    shadowColor: '#000',
+
     shadowOffset: {
       width: 0,
       height: 2,
@@ -65,32 +109,27 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: '100%',
+    height: '55%',
     resizeMode: 'cover',
-    marginRight: 10,
-  },
-  details: {
-    flex: 1,
+    // marginRight: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#ffffff',
+    fontFamily: 'Poppins-Medium',
+    maxWidth: 115,
   },
-  symbol: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 5,
+  label: {
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
   },
-  priceBtc: {
-    fontSize: 16,
-    color: '#ffffff',
-  },
-  id: {
-    fontSize: 12,
-    color: '#ffffff',
+  icon: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
+    zIndex: 1,
   },
 });
 

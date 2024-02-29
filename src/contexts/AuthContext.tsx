@@ -30,22 +30,27 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   initializeFirestore,
   onSnapshot,
+  query,
   setDoc,
+  where,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
 } from 'firebase/firestore';
 import useToast from '../hooks/useToast';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
+  apiKey: 'AIzaSyBo1BDdUIC_4Oiqqa0klf8KPP1JlvNhPwE',
+  authDomain: 'mycoins-ebac8.firebaseapp.com',
+  projectId: 'mycoins-ebac8',
+  storageBucket: 'mycoins-ebac8.appspot.com',
+  messagingSenderId: '597544437119',
+  appId: '1:597544437119:web:bdd50f432d6e4f0ccf464a',
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
@@ -137,12 +142,27 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
   async function loadStorageData({email}: {email: string}) {
     try {
-      const _unsub = onSnapshot(doc(db, 'users', email), docSnap => {
+      const _unsub = onSnapshot(doc(db, 'users', email), async docSnap => {
         console.log(docSnap?.data());
         const _authData: AuthData = {
           username: docSnap?.data()?.username || '',
           token: String(uuid.v4()),
+          email: docSnap?.data()?.email || '',
         };
+
+        const q = query(
+          collection(db, 'favorites'),
+          where('email', '==', email),
+        );
+
+        const querySnapshot = await getDocs(q);
+        const _favorites: any = [];
+
+        querySnapshot.forEach(d => {
+          _favorites.push(d.data());
+        });
+
+        _authData.favorites = _favorites[0] || {};
 
         setAuthData(_authData);
         setUnsubscribe(() => _unsub);
@@ -176,6 +196,98 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       console.log(error);
     }
   }
+
+  const updateFavorite = async ({
+    key,
+    id,
+    value,
+  }: {
+    key: string;
+    id: any;
+    value: any;
+  }) => {
+    if (!authData) {
+      throw new Error('User not authenticated');
+    }
+
+    if (!authData.token) {
+      throw new Error('User not authenticated');
+    }
+
+    const q = query(
+      collection(db, 'favorites'),
+      where('email', '==', authData.email),
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      const _favoritesRef = doc(collection(db, 'favorites'));
+
+      await setDoc(_favoritesRef, {
+        email: authData.email,
+        [key]: [id],
+      }).then(() => {
+        // ici
+        setAuthData({
+          ...authData,
+          favorites: {
+            ...authData.favorites,
+            [key]: [id],
+          },
+        });
+      });
+
+      return Promise.resolve('Favorite updated');
+    } else {
+      querySnapshot.forEach(async d => {
+        const _favoritesRef = doc(db, d.ref.path);
+
+        if (value) {
+          await updateDoc(_favoritesRef, {
+            [key]: arrayUnion(id),
+          }).then(() => {
+            //  ici
+            if (authData.favorites) {
+              const favoritesKey = key as keyof typeof authData.favorites;
+              setAuthData({
+                ...authData,
+                favorites: {
+                  ...authData.favorites,
+                  [favoritesKey]: [
+                    ...(authData.favorites[favoritesKey] || []),
+                    id,
+                  ],
+                },
+              });
+            }
+          });
+        } else {
+          await updateDoc(_favoritesRef, {
+            [key]: arrayRemove(id),
+          }).then(() => {
+            // ici
+            const favoritesKey = key as keyof typeof authData.favorites;
+            if (authData.favorites) {
+              setAuthData({
+                ...authData,
+                favorites: {
+                  ...authData.favorites,
+                  [favoritesKey]: [
+                    ...(
+                      (authData.favorites[favoritesKey] as any[]) || []
+                    )?.filter((i: any) => i !== id),
+                  ],
+                },
+              });
+            }
+          });
+        }
+      });
+
+      return Promise.resolve('Favorite updated');
+    }
+  };
 
   async function makeApiCall({
     method,
@@ -231,7 +343,15 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
     <AuthContext.Provider
-      value={{authData, loading, register, signIn, logout, makeApiCall}}>
+      value={{
+        authData,
+        loading,
+        register,
+        signIn,
+        logout,
+        makeApiCall,
+        updateFavorite,
+      }}>
       {children}
     </AuthContext.Provider>
   );
