@@ -15,6 +15,7 @@ import ListNft from '../components/MainPage/ListNft';
 import useModal from '../hooks/useModal';
 import ModalCoinContent from '../components/MainPage/ModalCoinContent';
 import ListTrending from '../components/ListTrending';
+import CustomButton from '../components/CustomButton';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
@@ -117,12 +118,12 @@ const Home: React.FC = () => {
               <Text h3 style={styles.titre}>
                 Exchanges
               </Text>
-              <TouchableOpacity
+              <CustomButton
+                title="Voir tout"
                 onPress={() => {
                   console.log('voir tout');
-                }}>
-                Voir tout
-              </TouchableOpacity>
+                }}
+              />
             </View>
 
             <FlatList

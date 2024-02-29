@@ -8,7 +8,7 @@ import CustomButton from '../components/CustomButton';
 import {Text} from 'react-native-elements';
 
 function Login({navigation}: any): React.JSX.Element {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -16,11 +16,11 @@ function Login({navigation}: any): React.JSX.Element {
 
   const handleRegister = useCallback(async () => {
     try {
-      await signIn({username, password});
+      await signIn({email, password});
     } catch (err) {
       setError(String(err));
     }
-  }, [username, password, signIn]);
+  }, [email, password, signIn]);
 
   useEffect(() => {
     if (error) {
@@ -31,8 +31,8 @@ function Login({navigation}: any): React.JSX.Element {
   }, [error]);
 
   const isDisabled = useMemo(
-    () => username === '' || password === '',
-    [username, password],
+    () => email === '' || password === '',
+    [email, password],
   );
 
   return (
@@ -47,8 +47,8 @@ function Login({navigation}: any): React.JSX.Element {
 
         <CustomTextInput
           placeholder="Email"
-          value={username}
-          onChangeText={e => setUsername(e)}
+          value={email}
+          onChangeText={e => setEmail(e)}
           leftIcon={
             <Feather name="mail" size={24} color={theme.colors.light.primary} />
           }
