@@ -38,7 +38,7 @@ import useToast from '../hooks/useToast';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyBo1BDdUIC_4Oiqqa0klf8KPP1JlvNhPwE',
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
@@ -104,8 +104,6 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     if (email === '' || password === '') {
       return Promise.reject('Email and password are required');
     }
-
-    console.log(email);
 
     try {
       await signInWithEmailAndPassword(auth, email, password).then(async () => {
@@ -204,18 +202,6 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         .catch(error => {
           console.log(error);
           return Promise.reject('Error on GET request');
-        });
-    } else if (method === 'POST') {
-      return axios
-        .post(`${url}&x_cg_demo_api_key=${process.env.COINGECKO_API_KEY}`, {
-          headers,
-        })
-        .then(response => {
-          return response.data;
-        })
-        .catch(error => {
-          console.log(error);
-          return Promise.reject('Error on POST request');
         });
     }
   }

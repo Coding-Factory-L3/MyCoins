@@ -20,20 +20,22 @@ export interface ModalContent {
 function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
   const isPercentagePositive = item.pricePercentage > 0;
   const isPriceAugmentedPositive = item.priceAugmented > 0;
-  const formattedPercentage = item.pricePercentage.toFixed(2);
+  const formattedPercentage = item.pricePercentage?.toFixed(2);
   const percentageText = isPercentagePositive
     ? `+${formattedPercentage}`
     : formattedPercentage;
-  const formattedPriceAugmented = item.priceAugmented.toFixed(4);
+  const formattedPriceAugmented = item.priceAugmented?.toFixed(4);
   const priceAugmentedText = isPriceAugmentedPositive
     ? `+${formattedPriceAugmented}`
     : formattedPriceAugmented;
 
   function truncateString(str: string, num: number) {
-    if (str.length <= num) {
-      return str;
+    if (str && num) {
+      if (str.length <= num) {
+        return str;
+      }
+      return str?.slice(0, num) + '...';
     }
-    return str.slice(0, num) + '...';
   }
 
   return (
@@ -63,7 +65,7 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
       </View>
       <Text style={styles.descriptionTitle}>Description</Text>
       <Text style={styles.description}>
-        {truncateString(item.description, 1000)}
+        {truncateString(item?.description, 1000)}
       </Text>
     </ScrollView>
   );
