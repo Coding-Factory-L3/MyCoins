@@ -1,9 +1,9 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useTheme} from '../../hooks/useTheme';
 import {useAuth} from '../../contexts/AuthContext';
+import {useTheme} from '../../hooks/useTheme';
 
 interface MainItemBoxProps {
   item: MainItem;
@@ -29,11 +29,20 @@ const ListTrending: React.FC<MainItemBoxProps> = ({
   const {currentTheme} = useTheme();
   const {authData, updateFavorite} = useAuth();
 
-  const isItemInFavorites = useMemo(() => {
-    return authData?.favorites?.nfts?.includes(item.id);
-  }, [authData?.favorites?.nfts, item.id]);
+  const [isFavoriteState, setIsFavoriteState] = useState(false);
 
-  const [isFavoriteState, setIsFavoriteState] = useState(isItemInFavorites);
+  useEffect(() => {
+    if (
+      authData &&
+      authData.favorites &&
+      authData.favorites.nfts &&
+      authData.favorites.nfts.includes(item.id)
+    ) {
+      setIsFavoriteState(true);
+    } else {
+      setIsFavoriteState(false);
+    }
+  }, [authData, item.id]);
 
   const onFavoritePress = async (id: string) => {
     await updateFavorite({key: 'nfts', id, value: !isFavoriteState}).then(

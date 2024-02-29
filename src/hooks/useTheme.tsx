@@ -22,6 +22,13 @@ interface ThemeColors {
     active: string;
     inactive: string;
   };
+  flag: {
+    text: string;
+    background: string;
+    selectedText?: string;
+    selectedBackground?: string;
+    border?: string;
+  };
 }
 
 interface ThemeConfig {
@@ -60,6 +67,14 @@ const defaultThemeConfig: ThemeConfig = {
         active: '#FF0000',
         inactive: '#333252',
       },
+
+      flag: {
+        text: '#EBECF1',
+        background: '#908DB8',
+        selectedText: '#908DB8',
+        selectedBackground: '#EBECF1',
+        border: '#908DB8',
+      },
     },
     dark: {
       primary: '#2B2B2B',
@@ -81,6 +96,14 @@ const defaultThemeConfig: ThemeConfig = {
       favorite: {
         active: '#FF0000',
         inactive: '#EBECF1',
+      },
+
+      flag: {
+        text: '#1C1C1C',
+        background: '#EBECF1',
+        selectedText: '#EBECF1',
+        selectedBackground: '#1C1C1C',
+        border: '#EBECF1',
       },
     },
   },

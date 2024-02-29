@@ -1,9 +1,9 @@
-import React, {useMemo, useState} from 'react';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
-import {useTheme} from '../../hooks/useTheme';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useAuth} from '../../contexts/AuthContext';
+import {useTheme} from '../../hooks/useTheme';
 
 interface MainItemBoxProps {
   item: MainItem;
@@ -20,11 +20,20 @@ const ListExchange: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
   const {currentTheme} = useTheme();
   const {updateFavorite, authData} = useAuth();
 
-  const isItemInFavorites = useMemo(() => {
-    return authData?.favorites?.exchanges?.includes(item.id);
-  }, [authData?.favorites?.exchanges, item.id]);
+  const [isFavoriteState, setIsFavoriteState] = useState(false);
 
-  const [isFavoriteState, setIsFavoriteState] = useState(isItemInFavorites);
+  useEffect(() => {
+    if (
+      authData &&
+      authData.favorites &&
+      authData.favorites.exchanges &&
+      authData.favorites.exchanges.includes(item.id)
+    ) {
+      setIsFavoriteState(true);
+    } else {
+      setIsFavoriteState(false);
+    }
+  }, [authData, item.id]);
 
   const onFavoritePress = async (id: string) => {
     await updateFavorite({key: 'exchanges', id, value: !isFavoriteState});

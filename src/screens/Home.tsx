@@ -211,7 +211,7 @@ const Home: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
   headerRow: {
     flexDirection: 'row',

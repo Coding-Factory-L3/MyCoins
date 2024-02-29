@@ -185,6 +185,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         const _authData: AuthData = {
           username: docSnap.data()?.username || '',
           token: String(uuid.v4()),
+          email: docSnap.data()?.email || '',
         };
 
         setAuthData(_authData);
@@ -267,6 +268,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
             [key]: arrayRemove(id),
           }).then(() => {
             // ici
+
             const favoritesKey = key as keyof typeof authData.favorites;
             if (authData.favorites) {
               setAuthData({
@@ -350,7 +352,9 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         signIn,
         logout,
         makeApiCall,
-        updateFavorite,
+        updateFavorite: async (data: any) => {
+          await updateFavorite(data);
+        },
       }}>
       {children}
     </AuthContext.Provider>

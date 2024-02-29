@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 25,
     borderRadius: 25,
-    marginHorizontal: width * 0.1,
+    marginHorizontal: 20,
     shadowOffset: {
       width: 0,
       height: 0,
