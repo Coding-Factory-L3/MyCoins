@@ -1,11 +1,12 @@
 import React, {useRef, useEffect} from 'react';
 import {StyleSheet, View, Animated, Easing} from 'react-native';
 import {Text} from 'react-native-elements';
-import theme from '../../theme';
 import {name as appName} from '../../app.json';
+import {useTheme} from '../hooks/useTheme';
 
 const SplashScreen: React.FC = () => {
   const floatAnimation = useRef(new Animated.Value(0)).current;
+  const {currentTheme} = useTheme();
 
   useEffect(() => {
     const floatUp = Animated.timing(floatAnimation, {
@@ -27,13 +28,16 @@ const SplashScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to {appName}</Text>
+      <Text style={{...styles.title, color: currentTheme.primary}}>
+        Welcome to {appName}
+      </Text>
       <Animated.Image
         source={require('../assets/logo/AppLogo.png')}
         style={[
           styles.logo,
           {
             transform: [{translateY: floatAnimation}],
+            shadowColor: currentTheme.tertiary,
           },
         ]}
       />
@@ -50,7 +54,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontFamily: 'Poppins-Medium',
-    color: theme.colors.light.primary,
     marginBottom: 20,
   },
   logo: {
@@ -59,7 +62,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: 'transparent',
 
-    shadowColor: theme.colors.light.tertiary,
     shadowOffset: {
       width: 0,
       height: 2,

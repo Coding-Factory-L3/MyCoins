@@ -2,10 +2,10 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import CustomTextInput from '../components/CustomTextInput';
 import Feather from 'react-native-vector-icons/Feather';
-import theme from '../../theme';
 import {useAuth} from '../contexts/AuthContext';
 import CustomButton from '../components/CustomButton';
 import {Text} from 'react-native-elements';
+import {useTheme} from '../hooks/useTheme';
 
 function Login({navigation}: any): React.JSX.Element {
   const [email, setEmail] = useState('');
@@ -13,6 +13,8 @@ function Login({navigation}: any): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
 
   const {signIn} = useAuth();
+
+  const {currentTheme} = useTheme();
 
   const handleRegister = useCallback(async () => {
     try {
@@ -36,21 +38,24 @@ function Login({navigation}: any): React.JSX.Element {
   );
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{...styles.container, backgroundColor: currentTheme.background}}>
       <View>
         <Image
           source={require('../assets/logo/AppLogo.png')}
-          style={styles.logo}
+          style={{...styles.logo, shadowColor: currentTheme.tertiary}}
         />
 
-        <Text style={styles.title}>Login</Text>
+        <Text style={{...styles.title, color: currentTheme.primary}}>
+          Login
+        </Text>
 
         <CustomTextInput
           placeholder="Email"
           value={email}
           onChangeText={e => setEmail(e)}
           leftIcon={
-            <Feather name="mail" size={24} color={theme.colors.light.primary} />
+            <Feather name="mail" size={24} color={currentTheme.primary} />
           }
         />
         <CustomTextInput
@@ -58,14 +63,14 @@ function Login({navigation}: any): React.JSX.Element {
           value={password}
           onChangeText={e => setPassword(e)}
           leftIcon={
-            <Feather name="lock" size={24} color={theme.colors.light.primary} />
+            <Feather name="lock" size={24} color={currentTheme.primary} />
           }
           secureTextEntry={true}
           isPassword={true}
-          iconColor={theme.colors.light.primary}
+          iconColor={currentTheme.primary}
         />
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={{color: theme.colors.light.primary, textAlign: 'right'}}>
+          <Text style={{color: currentTheme.primary, textAlign: 'right'}}>
             Don't have an account...
           </Text>
         </TouchableOpacity>
@@ -77,7 +82,9 @@ function Login({navigation}: any): React.JSX.Element {
           onPress={() => handleRegister()}
           disabled={isDisabled}
         />
-        <Text style={styles.error}>{error}</Text>
+        <Text style={{...styles.error, color: currentTheme.error}}>
+          {error}
+        </Text>
       </View>
     </View>
   );
@@ -87,7 +94,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: theme.colors.light.background,
     justifyContent: 'space-between',
     paddingVertical: 20,
   },
@@ -97,7 +103,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: 'transparent',
 
-    shadowColor: theme.colors.light.tertiary,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -108,12 +113,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: 'bold',
-    color: theme.colors.light.primary,
     textAlign: 'center',
     marginBottom: 20,
   },
   error: {
-    color: theme.colors.light.error,
     textAlign: 'center',
     marginTop: 10,
     fontWeight: '600',

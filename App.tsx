@@ -6,11 +6,11 @@ import {
   useColorScheme,
 } from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Router} from './src/navigation/router';
 import {AuthProvider} from './src/contexts/AuthContext';
 import Toast from 'react-native-toast-message';
 import theme from './theme';
+import {ThemeProvider} from './src/hooks/useTheme';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -23,15 +23,17 @@ function App(): React.JSX.Element {
 
   return (
     <>
-      <SafeAreaView style={[backgroundStyle, styles.container]}>
-        <AuthProvider>
-          <StatusBar
-            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-            backgroundColor={backgroundStyle.backgroundColor}
-          />
-          <Router />
-        </AuthProvider>
-      </SafeAreaView>
+      <ThemeProvider>
+        <SafeAreaView style={[backgroundStyle, styles.container]}>
+          <AuthProvider>
+            <StatusBar
+              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+              backgroundColor={backgroundStyle.backgroundColor}
+            />
+            <Router />
+          </AuthProvider>
+        </SafeAreaView>
+      </ThemeProvider>
       <Toast />
     </>
   );
