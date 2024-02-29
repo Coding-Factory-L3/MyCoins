@@ -1,31 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import CustomButton from '../components/CustomButton';
 import {useAuth} from '../contexts/AuthContext';
+import {Text} from 'react-native-elements';
+import Feather from 'react-native-vector-icons/Feather';
+import {useTheme} from '../hooks/useTheme';
 
 const Home: React.FC = () => {
-  const {makeApiCall} = useAuth();
-  const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState(true);
+  const {logout} = useAuth();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await makeApiCall({
-          method: 'GET',
-          url: 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en',
-        }).then(response => {
-          setData(response);
-          setLoading(false);
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
+  const {currentTheme, toggleTheme} = useTheme();
 
   return (
-    <View style={styles.container}>
-      <></>
+    <View
+      style={{...styles.container, backgroundColor: currentTheme.background}}>
+      <Text h1 style={{color: currentTheme.text}}>
+        Home
+      </Text>
+      {/* icon to change the theme */}
+      <Feather
+        name="sun"
+        size={24}
+        color={currentTheme.switch}
+        onPress={toggleTheme}
+      />
+      <CustomButton title="Sign Out" onPress={logout} />
     </View>
   );
 };
@@ -34,7 +33,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  search: {height: 40, margin: 12, borderWidth: 1, padding: 10},
 });
 
 export default Home;
