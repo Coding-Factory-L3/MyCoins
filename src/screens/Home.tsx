@@ -20,6 +20,8 @@ const Home: React.FC = () => {
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
+  const {logout} = useAuth();
+  const {currentTheme, toggleTheme} = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -140,6 +142,19 @@ const Home: React.FC = () => {
           </ModalWrapper>
         </>
       )}
+    <View
+      style={{...styles.container, backgroundColor: currentTheme.background}}>
+      <Text h1 style={{color: currentTheme.text}}>
+        Home
+      </Text>
+      {/* icon to change the theme */}
+      <Feather
+        name="sun"
+        size={24}
+        color={currentTheme.switch}
+        onPress={toggleTheme}
+      />
+      <CustomButton title="Sign Out" onPress={logout} />
     </View>
   );
 };

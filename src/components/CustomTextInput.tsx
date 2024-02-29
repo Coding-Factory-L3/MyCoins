@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Input} from 'react-native-elements';
 import Feather from 'react-native-vector-icons/Feather';
-import theme from '../../theme';
+import {useTheme} from '../hooks/useTheme';
 
 interface CustomTextInputProps {
   placeholder?: string;
@@ -35,12 +35,18 @@ function CustomTextInput({
     secureTextEntry || false,
   );
 
+  const {currentTheme} = useTheme();
+
   return (
     <View
       style={[
         styles.container,
         isFocused && styles.focused,
-        {paddingRight: isPassword ? 35 : 0},
+        {
+          paddingRight: isPassword ? 35 : 0,
+          borderColor: currentTheme.tertiary,
+          shadowColor: currentTheme.tertiary,
+        },
       ]}>
       <Input
         value={value}
@@ -58,6 +64,7 @@ function CustomTextInput({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         errorStyle={{display: 'none'}}
+        autoCapitalize="none"
       />
 
       {isPassword && (
@@ -89,13 +96,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'transparent',
     marginVertical: 10,
-    paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: theme.colors.light.secondary,
+    height: 48,
   },
   focused: {
-    borderColor: theme.colors.light.primary,
-    shadowColor: theme.colors.light.tertiary,
     shadowOffset: {
       width: 0,
       height: 0,
