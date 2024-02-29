@@ -12,6 +12,12 @@ interface ThemeColors {
   error?: string;
   switch?: string;
   textButton?: string;
+  bottomTab: {
+    background: string;
+    active: string;
+    inactive: string;
+    shadow?: string;
+  };
 }
 
 interface ThemeConfig {
@@ -38,6 +44,13 @@ const defaultThemeConfig: ThemeConfig = {
       error: '#FF0000',
       switch: '#1C1C1C',
       textButton: '#EBECF1',
+
+      bottomTab: {
+        background: '#EBECF1',
+        active: '#EBECF1',
+        inactive: '#908DB8',
+        shadow: '#333252',
+      },
     },
     dark: {
       primary: '#2B2B2B',
@@ -48,6 +61,13 @@ const defaultThemeConfig: ThemeConfig = {
       error: '#FF0000',
       switch: '#EBECF1',
       textButton: '#EBECF1',
+
+      bottomTab: {
+        background: '#1C1C1C',
+        active: '#EBECF1',
+        inactive: '#4B4B4B',
+        shadow: '#EBECF1',
+      },
     },
   },
 };
