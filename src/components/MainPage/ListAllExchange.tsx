@@ -1,5 +1,11 @@
 import React from 'react';
-import {StyleSheet, View, Image, Touchable, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import {Text} from 'react-native-elements';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -12,11 +18,9 @@ interface MainItemBoxProps {
 interface MainItem {
   id: string;
   name: string;
-  symbol: string;
-  image: string;
 }
 
-const ListExchange: React.FC<MainItemBoxProps> = ({
+const ListAllExchange: React.FC<MainItemBoxProps> = ({
   item,
   onFavoritePress,
   onPress,
@@ -25,9 +29,7 @@ const ListExchange: React.FC<MainItemBoxProps> = ({
     <TouchableOpacity onPress={onPress}>
       <View style={styles.card}>
         <View style={styles.details}>
-          <Image source={{uri: item.image}} style={styles.image} />
           <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.symbol}>{item.symbol}</Text>
           <Feather
             name="heart"
             size={24}
@@ -46,7 +48,6 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     height: 200,
-    marginRight: 20,
     alignItems: 'center',
     backgroundColor: '#213056',
     borderRadius: 10,
@@ -88,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListExchange;
+export default ListAllExchange;

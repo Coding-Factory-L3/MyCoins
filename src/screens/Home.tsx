@@ -111,6 +111,22 @@ const Home: React.FC = ({navigation}: any) => {
     }
   }, []);
 
+  const getExchange = useCallback(async ({id}: {id: string}) => {
+    try {
+      await Promise.all([
+        makeApiCall({
+          method: 'GET',
+          url: `https://api.coingecko.com/api/v3/exchanges/${id}?`,
+        }),
+      ]).then(res => {
+        setModalData(res[0]);
+        toggleModal();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   const onFavoritePress = (id: string) => {
     console.log('ID de la carte:', id);
   };
@@ -193,7 +209,9 @@ const Home: React.FC = ({navigation}: any) => {
               </Text>
               <TouchableOpacity>
                 <Text
-                  onPress={() => console.log('See All')}
+                  onPress={() =>
+                    navigation.push('AllExchange', {data: data.nfts})
+                  }
                   style={{color: currentTheme.text, margin: 10}}>
                   See All
                 </Text>
@@ -206,7 +224,13 @@ const Home: React.FC = ({navigation}: any) => {
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
-                  <ListExchange item={item} onFavoritePress={onFavoritePress} />
+                  <ListExchange
+                    onPress={() => {
+                      getExchange({id: item.id});
+                    }}
+                    item={item}
+                    onFavoritePress={onFavoritePress}
+                  />
                 );
               }}
             />

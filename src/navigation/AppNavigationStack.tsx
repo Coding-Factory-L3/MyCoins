@@ -4,6 +4,7 @@ import Home from '../screens/Home';
 import Search from '../screens/Search';
 import AllNft from '../screens/NftScreen';
 import {Button} from 'react-native-elements';
+import AllExchange from '../screens/ExchangeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,9 +29,10 @@ const AppStack: React.FC = () => {
               type="clear"
             />
           ),
-          headerBackVisible: false, // Pour masquer le bouton de retour natif
+          headerBackVisible: false,
         })}
       />
+      <Stack.Screen name="AllExchange" component={AllExchange} />
     </Stack.Navigator>
   );
 };
