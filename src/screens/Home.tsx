@@ -23,7 +23,7 @@ const Home: React.FC = () => {
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
-  const {currentTheme} = useTheme();
+  const {currentTheme, toggleTheme} = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,14 +111,27 @@ const Home: React.FC = () => {
   return (
     <View
       style={{...styles.container, backgroundColor: currentTheme.background}}>
-      <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Feather name="home" size={25} color={currentTheme.primary} />
+          <Feather name="home" size={25} color={currentTheme.switch} />
           <Text
             style={{...styles.titre, color: currentTheme.text, fontSize: 26}}>
             Marketplace
           </Text>
         </View>
+        <TouchableOpacity>
+          <Feather
+            name="sun"
+            size={25}
+            color={currentTheme.switch}
+            onPress={toggleTheme}
+          />
+        </TouchableOpacity>
       </View>
 
       {loading ? (
