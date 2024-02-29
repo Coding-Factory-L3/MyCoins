@@ -25,8 +25,8 @@ import ModalNftContent, {
   ModalNftContentProps,
 } from '../components/MainPage/ModalNftContent';
 
-const Home: React.FC = () => {
-  const {makeApiCall, logout} = useAuth();
+const Home: React.FC = ({navigation}: any) => {
+  const {makeApiCall} = useAuth();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {ModalComponent} = useModal();
@@ -59,10 +59,18 @@ const Home: React.FC = () => {
             method: 'GET',
             url: 'https://api.coingecko.com/api/v3/search/trending?',
           }),
+          // makeApiCall({
+          //   method: 'GET',
+          //   url: 'https://api.coingecko.com/api/v3/nfts/list?per_page=100&page=1',
+          // }),
         ];
 
         await Promise.all(apiCalls).then((res: any) => {
-          setData({crypto: res[0], nft: res[1], trending: res[2].nfts});
+          setData({
+            coin: res[0],
+            exchange: res[1],
+            trendingNfts: res[2].nfts,
+          });
           setLoading(false);
         });
       } catch (error) {
@@ -145,6 +153,22 @@ const Home: React.FC = () => {
     }
   }, []);
 
+  const getExchange = useCallback(async ({id}: {id: string}) => {
+    try {
+      await Promise.all([
+        makeApiCall({
+          method: 'GET',
+          url: `https://api.coingecko.com/api/v3/exchanges/${id}?`,
+        }),
+      ]).then(res => {
+        // setModalData(res[0]);
+        // toggleModal();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   return (
     <View
       style={{...styles.container, backgroundColor: currentTheme.background}}>
@@ -173,7 +197,7 @@ const Home: React.FC = () => {
               </Text>
               <TouchableOpacity>
                 <Text
-                  onPress={() => console.log('See All')}
+                  onPress={() => navigation.push('AllNft', {data: data.nfts})}
                   style={{color: currentTheme.text, margin: 10}}>
                   See All
                 </Text>
@@ -181,7 +205,7 @@ const Home: React.FC = () => {
             </View>
             <FlatList
               horizontal={true}
-              data={data.trending}
+              data={data.trendingNfts}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
@@ -209,7 +233,7 @@ const Home: React.FC = () => {
             </View>
             <FlatList
               horizontal={true}
-              data={data.crypto}
+              data={data.coin}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
@@ -229,7 +253,9 @@ const Home: React.FC = () => {
               </Text>
               <TouchableOpacity>
                 <Text
-                  onPress={() => console.log('See All')}
+                  onPress={() =>
+                    navigation.push('AllExchange', {data: data.nfts})
+                  }
                   style={{color: currentTheme.text, margin: 10}}>
                   See All
                 </Text>
@@ -237,10 +263,18 @@ const Home: React.FC = () => {
             </View>
             <FlatList
               horizontal={true}
-              data={data.nft}
+              data={data.exchange}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
-                return <ListExchange item={item} />;
+                return (
+                  <ListExchange
+                    // onPress={() => {
+                    //   getExchange({id: item.id});
+                    // }}
+                    item={item}
+                    // onFavoritePress={onFavoritePress}
+                  />
+                );
               }}
             />
           </ScrollView>
