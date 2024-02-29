@@ -14,7 +14,7 @@ interface MainItem {
   symbol: string;
 }
 
-const MainItemBox: React.FC<MainItemBoxProps> = ({
+const ListPopularNft: React.FC<MainItemBoxProps> = ({
   item,
   onPress,
 }: MainItemBoxProps) => {
@@ -22,7 +22,6 @@ const MainItemBox: React.FC<MainItemBoxProps> = ({
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <Image source={{uri: item.image}} style={styles.image} />
       <View style={styles.details}>
-        <Text style={styles.id}>{item.id}</Text>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.symbol}>{item.symbol}</Text>
       </View>
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     height: 200,
-
+    marginRight: 20,
     alignItems: 'center',
     backgroundColor: '#213056',
     borderRadius: 10,
@@ -65,6 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#ffffff',
   },
   symbol: {
     fontSize: 16,
@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainItemBox;
+export default ListPopularNft;
