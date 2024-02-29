@@ -4,85 +4,176 @@ import React, {
   useContext,
   ReactNode,
   useEffect,
+  useCallback,
 } from 'react';
-import {AuthContextData, AuthData, ApiCallParams} from '../types/AuthTypes';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  AuthContextData,
+  AuthData,
+  ApiCallParams,
+  AuthRegisterData,
+  AuthLoginData,
+  AuthInfoSave,
+} from '../types/AuthTypes';
 import uuid from 'react-native-uuid';
 import axios from 'axios';
+
+// Import the functions you need from the SDKs you need
+import {initializeApp} from 'firebase/app';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
+import {
+  collection,
+  doc,
+  getDoc,
+  initializeFirestore,
+  onSnapshot,
+  setDoc,
+} from 'firebase/firestore';
+import useToast from '../hooks/useToast';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [authData, setAuthData] = useState<AuthData>();
+  const [unsubscribe, setUnsubscribe] = useState<any>();
 
   //The loading part will be explained in the persist step session
   const [loading, setLoading] = useState(true);
 
-  const register = async ({username, password}: AuthData) => {
-    if (username === '' || password === '') {
-      throw new Error('Username and password are required');
+  const {showToast} = useToast();
+
+  const register = async ({
+    email,
+    username,
+    password,
+    confirmPassword,
+  }: AuthRegisterData) => {
+    if (email === '' || username === '' || password === '') {
+      throw new Error('Email, username and password are required');
     }
 
-    //...call service and setAuthData
-    const _authData: AuthData = {
-      username,
-      password,
-    };
-
-    //Persist the data in the Async Storage
-    //to be recovered in the next user session.
-    AsyncStorage.setItem('@UserData', JSON.stringify(_authData));
-  };
-
-  const signIn = async ({username, password}: AuthData) => {
-    if (username === '' || password === '') {
-      throw new Error('Username and password are required');
+    if (password !== confirmPassword) {
+      throw new Error('Passwords do not match');
     }
 
-    const userData = await AsyncStorage.getItem('@UserData');
-    const parsedUserData = JSON.parse(userData || '{}');
-
-    if (
-      parsedUserData.username !== username ||
-      parsedUserData.password !== password
-    ) {
-      throw new Error('Username or password invalid');
-    }
-
-    //...call service and setAuthData
-    const _authData: AuthData = {
-      username,
-      password,
-      token: String(uuid.v4()),
-    };
-
-    //Persist the data in the Async Storage
-    //to be recovered in the next user session.
-    AsyncStorage.setItem('@AuthData', JSON.stringify(_authData));
-  };
-
-  const signOut = async () => {
-    //Remove the data from Async Storage
-    //to NOT be recovered in next session.
-    await AsyncStorage.removeItem('@AuthData');
-
-    //Remove the data from the state
-    setAuthData(undefined);
-  };
-
-  async function loadStorageData(): Promise<void> {
     try {
-      //Try get the data from Async Storage
-      const authDataSerialized = await AsyncStorage.getItem('@AuthData');
-      if (authDataSerialized) {
-        //If there are data, it's converted to an Object and the state is updated.
-        const _authData: AuthData = JSON.parse(authDataSerialized);
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      const _userRef = doc(collection(db, 'users'), email);
+
+      const _authData: AuthInfoSave = {
+        email,
+        username,
+      };
+
+      await setDoc(_userRef, _authData).then(() => {
+        showToast({
+          type: 'success',
+          text1: `Welcome ${username}`,
+        });
+      });
+    } catch (error) {
+      console.log(error);
+      return Promise.reject('Error on register');
+    }
+  };
+
+  const signIn = async ({email, password}: AuthLoginData) => {
+    if (email === '' || password === '') {
+      return Promise.reject('Email and password are required');
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password).then(async () => {
+        const data = await getAuthData({email: email});
+        showToast({
+          type: 'success',
+          text1: `Welcome back ${data?.username}`,
+        });
+      });
+    } catch (error) {
+      console.log(error);
+      showToast({
+        type: 'error',
+        text1: 'Error on sign in',
+      });
+
+      return Promise.reject('Error on sign in');
+    }
+  };
+
+  const logout = useCallback(async () => {
+    unsubscribe();
+    await signOut(auth);
+    setAuthData(undefined);
+
+    showToast({
+      type: 'success',
+      text1: 'See you soon!',
+    });
+  }, [unsubscribe, showToast]);
+
+  async function loadStorageData({email}: {email: string}) {
+    try {
+      const _unsub = onSnapshot(doc(db, 'users', email), docSnap => {
+        console.log(docSnap?.data());
+        const _authData: AuthData = {
+          username: docSnap?.data()?.username || '',
+          token: String(uuid.v4()),
+        };
+
         setAuthData(_authData);
+        setUnsubscribe(() => _unsub);
+        setLoading(false);
+
+        console.log('User data loaded');
+
+        return Promise.resolve(_authData);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function getAuthData({email}: {email: string}) {
+    try {
+      const docSnap = await getDoc(doc(db, 'users', email));
+
+      if (docSnap.exists()) {
+        const _authData: AuthData = {
+          username: docSnap.data()?.username || '',
+          token: String(uuid.v4()),
+        };
+
+        setAuthData(_authData);
+        setLoading(false);
+
+        return Promise.resolve(_authData);
       }
     } catch (error) {
-    } finally {
-      //loading finished
-      setLoading(false);
+      console.log(error);
     }
   }
 
@@ -91,17 +182,13 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     url,
     headers,
   }: ApiCallParams): Promise<void> {
-    const userData = await AsyncStorage.getItem('@UserData');
+    if (!authData) {
+      throw new Error('User not authenticated');
+    }
 
-    // if (!userData) {
-    //   return Promise.reject('User not authenticated');
-    // }
-
-    // const parsedUserData = JSON.parse(userData);
-
-    // if (!parsedUserData.token) {
-    //   return Promise.reject('User not authenticated');
-    // }
+    if (!authData.token) {
+      throw new Error('User not authenticated');
+    }
 
     //...call service and setAuthData
     if (method === 'GET') {
@@ -132,16 +219,31 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   }
 
   useEffect(() => {
-    //Every time the App is opened, this provider is rendered
-    //and call de loadStorageData function.
-    loadStorageData();
+    const authUnsubscribe = onAuthStateChanged(
+      auth,
+      async user => {
+        if (user) {
+          await loadStorageData({email: user.email || ''});
+        } else {
+          setAuthData(undefined);
+          setLoading(false);
+        }
+      },
+      async error => {
+        console.log(error);
+        await logout();
+        setLoading(false);
+      },
+    );
+
+    return () => authUnsubscribe();
   }, []);
 
   return (
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
     <AuthContext.Provider
-      value={{authData, loading, register, signIn, signOut, makeApiCall}}>
+      value={{authData, loading, register, signIn, logout, makeApiCall}}>
       {children}
     </AuthContext.Provider>
   );

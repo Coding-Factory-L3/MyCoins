@@ -52,6 +52,7 @@ function CustomTextInput({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         errorStyle={{display: 'none'}}
+        autoCapitalize="none"
       />
 
       {isPassword && (
@@ -83,9 +84,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'transparent',
     marginVertical: 10,
-    paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: theme.colors.light.secondary,
+    height: 48,
   },
   focused: {
     borderColor: theme.colors.light.primary,
