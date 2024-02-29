@@ -38,7 +38,7 @@ import useToast from '../hooks/useToast';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: 'AIzaSyBo1BDdUIC_4Oiqqa0klf8KPP1JlvNhPwE',
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
@@ -104,6 +104,8 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     if (email === '' || password === '') {
       return Promise.reject('Email and password are required');
     }
+
+    console.log(email);
 
     try {
       await signInWithEmailAndPassword(auth, email, password).then(async () => {

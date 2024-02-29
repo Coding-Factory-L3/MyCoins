@@ -8,7 +8,7 @@ import {Text} from 'react-native-elements';
 import {useTheme} from '../hooks/useTheme';
 
 function Login({navigation}: any): React.JSX.Element {
-  const [email, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +53,7 @@ function Login({navigation}: any): React.JSX.Element {
         <CustomTextInput
           placeholder="Email"
           value={email}
-          onChangeText={e => setUsername(e)}
+          onChangeText={e => setEmail(e)}
           leftIcon={
             <Feather name="mail" size={24} color={currentTheme.primary} />
           }

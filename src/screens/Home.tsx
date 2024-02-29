@@ -6,14 +6,18 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {useAuth} from '../contexts/AuthContext';
-import MainItemBox from '../components/MainPage/MainItemBox';
 import {Text} from 'react-native-elements';
-import ListNft from '../components/MainPage/ListNft';
-import useModal from '../hooks/useModal';
-import ModalCoinContent from '../components/MainPage/ModalCoinContent';
+import CustomButton from '../components/CustomButton';
 import ListTrending from '../components/ListTrending';
-import { ModalContent } from '../components/MainPage/ModalCoinContent';
+import ListNft from '../components/MainPage/ListNft';
+import MainItemBox from '../components/MainPage/MainItemBox';
+import ModalCoinContent, {
+  ModalContent,
+} from '../components/MainPage/ModalCoinContent';
+import {useAuth} from '../contexts/AuthContext';
+import useModal from '../hooks/useModal';
+import {useTheme} from '../hooks/useTheme';
+import ListPopularNft from '../components/MainPage/ListPopularNft';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
@@ -33,7 +37,7 @@ const Home: React.FC = () => {
           }),
           makeApiCall({
             method: 'GET',
-            url: 'https://api.coingecko.com/api/v3/nfts/list?per_page=7&page=1',
+            url: 'https://api.coingecko.com/api/v3/exchanges?per_page=7',
           }),
           makeApiCall({
             method: 'GET',
@@ -56,33 +60,49 @@ const Home: React.FC = () => {
     fetchData();
   }, []);
 
-  const getCoin = useCallback(
-    async (id: string) => {
-      try {
-        const response = await makeApiCall({
-          method: 'GET',
-          url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=true`,
-        });
+  // const getCoin = useCallback(
+  //   async (id: string) => {
+  //     try {
+  //       const response = await makeApiCall({
+  //         method: 'GET',
+  //         url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=true`,
+  //       });
 
-        const coinData: ModalContent = {
-          id: response.id,
-          name: response.name,
-          description: response.description.en,
-          icon: response.image.large,
-          symbol: response.symbol,
-          priceAugmented: response.market_data.price_change_24h_in_currency.eur,
-          pricePercentage: response.market_data.price_change_percentage_24h,
-          price: response.market_data.current_price.eur,
-        };
-        // console.log(response.market_data.current_price.eur);
-        setModalData(coinData);
+  //       const coinData: ModalContent = {
+  //         id: response.id,
+  //         name: response.name,
+  //         description: response.description.en,
+  //         icon: response.image.large,
+  //         symbol: response.symbol,
+  //         priceAugmented: response.market_data.price_change_24h_in_currency.eur,
+  //         pricePercentage: response.market_data.price_change_percentage_24h,
+  //         price: response.market_data.current_price.eur,
+  //       };
+  //       // console.log(response.market_data.current_price.eur);
+  //       setModalData(coinData);
+  //       toggleModal();
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   },
+  //   [makeApiCall, toggleModal, setModalData],
+  // );
+
+  const getCoin = useCallback(async ({id}: {id: string}) => {
+    try {
+      await Promise.all([
+        makeApiCall({
+          method: 'GET',
+          url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=true`,
+        }),
+      ]).then(res => {
+        setModalData(res[0]);
         toggleModal();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    [makeApiCall, toggleModal, setModalData],
-  );
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -96,7 +116,7 @@ const Home: React.FC = () => {
         <>
           <ScrollView>
             <Text h3 style={styles.titre}>
-              Trending
+              Popular Nft
             </Text>
             <FlatList
               style={styles.list}
@@ -115,18 +135,29 @@ const Home: React.FC = () => {
               horizontal={true}
               data={data.crypto}
               keyExtractor={(item: any) => item.id}
-              renderItem={({item}) => (
-                <MainItemBox
-                  item={item}
-                  onPress={() => {
-                    getCoin(item.id);
-                  }}
-                />
-              )}
+              renderItem={({item}) => {
+                return (
+                  <ListPopularNft
+                    item={item}
+                    onPress={() => {
+                      getCoin({id: item.id});
+                    }}
+                  />
+                );
+              }}
             />
-            <Text h3 style={styles.titre}>
-              Popular Nft
-            </Text>
+            <View style={styles.row}>
+              <Text h3 style={styles.titre}>
+                Exchanges
+              </Text>
+              <CustomButton
+                title="Voir tout"
+                onPress={() => {
+                  console.log('voir tout');
+                }}
+              />
+            </View>
+
             <FlatList
               style={styles.list}
               horizontal={true}
@@ -142,19 +173,6 @@ const Home: React.FC = () => {
           </ModalWrapper>
         </>
       )}
-    <View
-      style={{...styles.container, backgroundColor: currentTheme.background}}>
-      <Text h1 style={{color: currentTheme.text}}>
-        Home
-      </Text>
-      {/* icon to change the theme */}
-      <Feather
-        name="sun"
-        size={24}
-        color={currentTheme.switch}
-        onPress={toggleTheme}
-      />
-      <CustomButton title="Sign Out" onPress={logout} />
     </View>
   );
 };
@@ -170,6 +188,9 @@ const styles = StyleSheet.create({
   titre: {
     color: '#ffffff',
     margin: 10,
+  },
+  row: {
+    flexDirection: 'row',
   },
 });
 
