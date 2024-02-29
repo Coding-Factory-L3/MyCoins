@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     height: 80,
     resizeMode: 'contain',
     marginRight: 10,
-    borderRadius: 25,
+    borderRadius: 40,
   },
   topRow: {
     flexGrow: 1,

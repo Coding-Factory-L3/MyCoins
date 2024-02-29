@@ -13,6 +13,7 @@ import ListNft from '../components/MainPage/ListNft';
 import useModal from '../hooks/useModal';
 import ModalCoinContent from '../components/MainPage/ModalCoinContent';
 import ListTrending from '../components/ListTrending';
+import { ModalContent } from '../components/MainPage/ModalCoinContent';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
@@ -53,21 +54,33 @@ const Home: React.FC = () => {
     fetchData();
   }, []);
 
-  const getCoin = useCallback(async ({id}: {id: string}) => {
-    try {
-      await Promise.all([
-        makeApiCall({
+  const getCoin = useCallback(
+    async (id: string) => {
+      try {
+        const response = await makeApiCall({
           method: 'GET',
-          url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=true`,
-        }),
-      ]).then(res => {
-        setModalData(res[0]);
+          url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=true`,
+        });
+
+        const coinData: ModalContent = {
+          id: response.id,
+          name: response.name,
+          description: response.description.en,
+          icon: response.image.large,
+          symbol: response.symbol,
+          priceAugmented: response.market_data.price_change_24h_in_currency.eur,
+          pricePercentage: response.market_data.price_change_percentage_24h,
+          price: response.market_data.current_price.eur,
+        };
+        // console.log(response.market_data.current_price.eur);
+        setModalData(coinData);
         toggleModal();
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [makeApiCall, toggleModal, setModalData],
+  );
 
   return (
     <View style={styles.container}>
@@ -100,16 +113,14 @@ const Home: React.FC = () => {
               horizontal={true}
               data={data.crypto}
               keyExtractor={(item: any) => item.id}
-              renderItem={({item}) => {
-                return (
-                  <MainItemBox
-                    item={item}
-                    onPress={() => {
-                      getCoin({id: item.id});
-                    }}
-                  />
-                );
-              }}
+              renderItem={({item}) => (
+                <MainItemBox
+                  item={item}
+                  onPress={() => {
+                    getCoin(item.id);
+                  }}
+                />
+              )}
             />
             <Text h3 style={styles.titre}>
               Popular Nft
