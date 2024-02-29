@@ -1,35 +1,55 @@
 import React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
+import Feather from 'react-native-vector-icons/Feather';
 
 interface MainItemBoxProps {
   item: MainItem;
+  onFavoritePress: (id: string) => void;
+  onPress?: () => void;
 }
 
 interface MainItem {
   id: string;
   name: string;
   symbol: string;
-  image: string;
+  thumb: string;
+  price_btc: number;
+  data: {
+    floor_price: number;
+  };
 }
 
-const ListNft: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
+const ListTrending: React.FC<MainItemBoxProps> = ({
+  item,
+  onFavoritePress,
+  onPress,
+}: MainItemBoxProps) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <Image source={{uri: item.thumb}} style={styles.image} />
       <View style={styles.details}>
-        <Image source={{uri: item.image}} style={styles.image} />
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.symbol}>{item.symbol}</Text>
+        <Text style={styles.priceBtc}>Price BTC: {item.data.floor_price}</Text>
+        <Feather
+          name="heart"
+          size={24}
+          color="#ffffff"
+          onPress={() => {
+            onFavoritePress(item.id);
+          }}
+        />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    height: 200,
     marginRight: 20,
+    height: 200,
     alignItems: 'center',
     backgroundColor: '#213056',
     borderRadius: 10,
@@ -47,7 +67,7 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     height: 80,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     marginRight: 10,
   },
   details: {
@@ -64,11 +84,14 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 5,
   },
-
+  priceBtc: {
+    fontSize: 16,
+    color: '#ffffff',
+  },
   id: {
     fontSize: 12,
     color: '#ffffff',
   },
 });
 
-export default ListNft;
+export default ListTrending;

@@ -4,24 +4,25 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
-import MainItemBox from '../components/MainPage/MainItemBox';
+import ListPopularCoin from '../components/MainPage/ListPopularCoin';
 import {Text} from 'react-native-elements';
-import ListNft from '../components/MainPage/ListNft';
+import ListExchange from '../components/MainPage/ListExchange';
 import useModal from '../hooks/useModal';
 import ModalCoinContent from '../components/MainPage/ModalCoinContent';
-import ListTrending from '../components/ListTrending';
-import { ModalContent } from '../components/MainPage/ModalCoinContent';
+import ListTrending from '../components/MainPage/ListTrending';
+import {useTheme} from '../hooks/useTheme';
+import {ModalContent} from '../components/MainPage/ModalCoinContent';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
-  const {logout} = useAuth();
-  const {currentTheme, toggleTheme} = useTheme();
+  const {currentTheme} = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +34,7 @@ const Home: React.FC = () => {
           }),
           makeApiCall({
             method: 'GET',
-            url: 'https://api.coingecko.com/api/v3/nfts/list?per_page=7&page=1',
+            url: 'https://api.coingecko.com/api/v3/exchanges?per_page=7',
           }),
           makeApiCall({
             method: 'GET',
@@ -43,8 +44,6 @@ const Home: React.FC = () => {
 
         await Promise.all(apiCalls).then(res => {
           setData({crypto: res[0], nft: res[1], trending: res[2].nfts});
-
-          console.log(res[2]);
           setLoading(false);
         });
       } catch (error) {
@@ -57,26 +56,30 @@ const Home: React.FC = () => {
   }, []);
 
   const getCoin = useCallback(
-    async (id: string) => {
+    async ({id}: {id: string}) => {
       try {
-        const response = await makeApiCall({
-          method: 'GET',
-          url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=true`,
-        });
+        await Promise.all([
+          makeApiCall({
+            method: 'GET',
+            url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=true`,
+          }),
+        ]).then((res: any) => {
+          const response = res[0];
+          const coinData: ModalContent = {
+            id: response?.id,
+            name: response?.name,
+            description: response?.description.en,
+            icon: response?.image.large,
+            symbol: response?.symbol,
+            priceAugmented:
+              response?.market_data.price_change_24h_in_currency.eur,
+            pricePercentage: response?.market_data.price_change_percentage_24h,
+            price: response?.market_data.current_price.eur,
+          };
 
-        const coinData: ModalContent = {
-          id: response.id,
-          name: response.name,
-          description: response.description.en,
-          icon: response.image.large,
-          symbol: response.symbol,
-          priceAugmented: response.market_data.price_change_24h_in_currency.eur,
-          pricePercentage: response.market_data.price_change_percentage_24h,
-          price: response.market_data.current_price.eur,
-        };
-        // console.log(response.market_data.current_price.eur);
-        setModalData(coinData);
-        toggleModal();
+          setModalData(coinData);
+          toggleModal();
+        });
       } catch (error) {
         console.error(error);
       }
@@ -84,9 +87,30 @@ const Home: React.FC = () => {
     [makeApiCall, toggleModal, setModalData],
   );
 
+  const getNft = useCallback(async ({id}: {id: string}) => {
+    try {
+      await Promise.all([
+        makeApiCall({
+          method: 'GET',
+          url: `https://api.coingecko.com/api/v3/nfts/${id}?`,
+        }),
+      ]).then(res => {
+        setModalData(res[0]);
+        toggleModal();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const onFavoritePress = (id: string) => {
+    console.log('ID de la carte:', id);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text h1 style={styles.titre}>
+    <View
+      style={{...styles.container, backgroundColor: currentTheme.background}}>
+      <Text h1 style={{...styles.titre, color: currentTheme.text}}>
         Marketplace
       </Text>
 
@@ -95,45 +119,87 @@ const Home: React.FC = () => {
       ) : (
         <>
           <ScrollView>
-            <Text h3 style={styles.titre}>
-              Trending
-            </Text>
+            <View style={styles.row}>
+              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+                Popular NFT
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  onPress={() => console.log('See All')}
+                  style={{color: currentTheme.text, margin: 10}}>
+                  See All
+                </Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
               style={styles.list}
               horizontal={true}
               data={data.trending}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
-                return <ListTrending item={item} />;
+                return (
+                  <ListTrending
+                    item={item}
+                    onPress={() => {
+                      getNft({id: item.id});
+                    }}
+                    onFavoritePress={onFavoritePress}
+                  />
+                );
               }}
             />
-            <Text h3 style={styles.titre}>
-              Popular Coins
-            </Text>
+
+            <View style={styles.row}>
+              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+                Popular coins
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  onPress={() => console.log('See All')}
+                  style={{color: currentTheme.text, margin: 10}}>
+                  See All
+                </Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
               style={styles.list}
               horizontal={true}
               data={data.crypto}
               keyExtractor={(item: any) => item.id}
-              renderItem={({item}) => (
-                <MainItemBox
-                  item={item}
-                  onPress={() => {
-                    getCoin(item.id);
-                  }}
-                />
-              )}
+              renderItem={({item}) => {
+                return (
+                  <ListPopularCoin
+                    item={item}
+                    onPress={() => {
+                      getCoin({id: item.id});
+                    }}
+                    onFavoritePress={onFavoritePress}
+                  />
+                );
+              }}
             />
-            <Text h3 style={styles.titre}>
-              Popular Nft
-            </Text>
+
+            <View style={styles.row}>
+              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+                Exchanges
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  onPress={() => console.log('See All')}
+                  style={{color: currentTheme.text, margin: 10}}>
+                  See All
+                </Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
               style={styles.list}
               horizontal={true}
               data={data.nft}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
-                return <ListNft item={item} />;
+                return (
+                  <ListExchange item={item} onFavoritePress={onFavoritePress} />
+                );
               }}
             />
           </ScrollView>
@@ -142,19 +208,6 @@ const Home: React.FC = () => {
           </ModalWrapper>
         </>
       )}
-    <View
-      style={{...styles.container, backgroundColor: currentTheme.background}}>
-      <Text h1 style={{color: currentTheme.text}}>
-        Home
-      </Text>
-      {/* icon to change the theme */}
-      <Feather
-        name="sun"
-        size={24}
-        color={currentTheme.switch}
-        onPress={toggleTheme}
-      />
-      <CustomButton title="Sign Out" onPress={logout} />
     </View>
   );
 };
@@ -162,14 +215,17 @@ const Home: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#20243F',
   },
   list: {
     paddingLeft: 10,
   },
   titre: {
-    color: '#ffffff',
     margin: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 
