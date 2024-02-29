@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
-import theme from '../../theme';
+import {useTheme} from '../hooks/useTheme';
 
 interface CustomButtonProps {
   onPress: () => void;
@@ -16,6 +16,8 @@ function CustomButton({
   disabled,
   customStyle,
 }: CustomButtonProps): React.JSX.Element {
+  const {currentTheme} = useTheme();
+
   return (
     <TouchableOpacity
       style={{
@@ -23,17 +25,16 @@ function CustomButton({
         ...styles.shadow,
         ...customStyle,
         backgroundColor: disabled
-          ? theme.colors.light.secondary
-          : theme.colors.light.primary,
+          ? currentTheme.secondary
+          : currentTheme.primary,
+        shadowColor: currentTheme.tertiary,
       }}
       onPress={onPress}
       disabled={disabled}>
       <Text
         style={{
           ...styles.text,
-          color: disabled
-            ? theme.colors.light.primary
-            : theme.colors.light.text,
+          color: disabled ? currentTheme.primary : currentTheme.textButton,
         }}>
         {title}
       </Text>
@@ -50,13 +51,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color: theme.colors.light.primary,
+
     textAlign: 'center',
     padding: 10,
     fontWeight: '600',
   },
   shadow: {
-    shadowColor: theme.colors.light.tertiary,
     shadowOffset: {
       width: 0,
       height: 2,

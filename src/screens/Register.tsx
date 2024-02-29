@@ -5,6 +5,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import theme from '../../theme';
 import CustomButton from '../components/CustomButton';
 import {useAuth} from '../contexts/AuthContext';
+import {useTheme} from '../hooks/useTheme';
 
 function Register({navigation}: any): React.JSX.Element {
   const {register} = useAuth();
@@ -13,6 +14,8 @@ function Register({navigation}: any): React.JSX.Element {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const {currentTheme} = useTheme();
 
   const onRegisterPress = useCallback(async () => {
     try {
@@ -39,11 +42,12 @@ function Register({navigation}: any): React.JSX.Element {
   );
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{...styles.container, backgroundColor: currentTheme.background}}>
       <View>
         <Image
           source={require('../assets/logo/AppLogo.png')}
-          style={styles.logo}
+          style={{...styles.logo, shadowColor: currentTheme.tertiary}}
         />
 
         <CustomTextInput
@@ -51,7 +55,7 @@ function Register({navigation}: any): React.JSX.Element {
           value={email}
           onChangeText={e => setEmail(e)}
           leftIcon={
-            <Feather name="mail" size={24} color={theme.colors.light.primary} />
+            <Feather name="mail" size={24} color={currentTheme.primary} />
           }
         />
 
@@ -60,7 +64,7 @@ function Register({navigation}: any): React.JSX.Element {
           value={username}
           onChangeText={e => setUsername(e)}
           leftIcon={
-            <Feather name="user" size={24} color={theme.colors.light.primary} />
+            <Feather name="user" size={24} color={currentTheme.primary} />
           }
         />
         <CustomTextInput
@@ -68,25 +72,25 @@ function Register({navigation}: any): React.JSX.Element {
           value={password}
           onChangeText={e => setPassword(e)}
           leftIcon={
-            <Feather name="lock" size={24} color={theme.colors.light.primary} />
+            <Feather name="lock" size={24} color={currentTheme.primary} />
           }
           secureTextEntry={true}
           isPassword={true}
-          iconColor={theme.colors.light.primary}
+          iconColor={currentTheme.primary}
         />
         <CustomTextInput
           placeholder="Confirm password"
           value={confirmPassword}
           onChangeText={e => setConfirmPassword(e)}
           leftIcon={
-            <Feather name="lock" size={24} color={theme.colors.light.primary} />
+            <Feather name="lock" size={24} color={currentTheme.primary} />
           }
           secureTextEntry={true}
           isPassword={true}
-          iconColor={theme.colors.light.primary}
+          iconColor={currentTheme.primary}
         />
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={{color: theme.colors.light.primary, textAlign: 'right'}}>
+          <Text style={{color: currentTheme.primary, textAlign: 'right'}}>
             Already have an account...
           </Text>
         </TouchableOpacity>
@@ -110,7 +114,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: theme.colors.light.background,
     justifyContent: 'space-between',
     paddingVertical: 20,
   },
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: 'center',
 
-    shadowColor: theme.colors.light.tertiary,
     shadowOffset: {
       width: 0,
       height: 2,
