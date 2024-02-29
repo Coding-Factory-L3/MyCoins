@@ -9,19 +9,21 @@ import {
   View,
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
-import ListPopularNft from '../components/MainPage/ListPopularNft';
+import ListPopularCoin from '../components/MainPage/ListPopularCoin';
 import {Button, Text} from 'react-native-elements';
-import ListNft from '../components/MainPage/ListNft';
+import ListExchange from '../components/MainPage/ListExchange';
 import useModal from '../hooks/useModal';
 import ModalCoinContent from '../components/MainPage/ModalCoinContent';
-import ListTrending from '../components/ListTrending';
+import ListTrending from '../components/MainPage/ListTrending';
 import CustomButton from '../components/CustomButton';
+import {useTheme} from '../hooks/useTheme';
 
 const Home: React.FC = () => {
   const {makeApiCall} = useAuth();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
+  const {currentTheme} = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,8 +45,6 @@ const Home: React.FC = () => {
 
         await Promise.all(apiCalls).then(res => {
           setData({crypto: res[0], nft: res[1], trending: res[2].nfts});
-
-          console.log(res[2]);
           setLoading(false);
         });
       } catch (error) {
@@ -72,9 +72,30 @@ const Home: React.FC = () => {
     }
   }, []);
 
+  const getNft = useCallback(async ({id}: {id: string}) => {
+    try {
+      await Promise.all([
+        makeApiCall({
+          method: 'GET',
+          url: `https://api.coingecko.com/api/v3/nfts/${id}?`,
+        }),
+      ]).then(res => {
+        setModalData(res[0]);
+        toggleModal();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const onFavoritePress = (id: string) => {
+    console.log('ID de la carte:', id);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text h1 style={styles.titre}>
+    <View
+      style={{...styles.container, backgroundColor: currentTheme.background}}>
+      <Text h1 style={{...styles.titre, color: currentTheme.text}}>
         Marketplace
       </Text>
 
@@ -83,21 +104,48 @@ const Home: React.FC = () => {
       ) : (
         <>
           <ScrollView>
-            <Text h3 style={styles.titre}>
-              Popular Nft
-            </Text>
+            <View style={styles.row}>
+              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+                Popular NFT
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  onPress={() => console.log('See All')}
+                  style={{color: currentTheme.text, margin: 10}}>
+                  See All
+                </Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
               style={styles.list}
               horizontal={true}
               data={data.trending}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
-                return <ListTrending item={item} />;
+                return (
+                  <ListTrending
+                    item={item}
+                    onPress={() => {
+                      getNft({id: item.id});
+                    }}
+                    onFavoritePress={onFavoritePress}
+                  />
+                );
               }}
             />
-            <Text h3 style={styles.titre}>
-              Popular Coins
-            </Text>
+
+            <View style={styles.row}>
+              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
+                Popular coins
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  onPress={() => console.log('See All')}
+                  style={{color: currentTheme.text, margin: 10}}>
+                  See All
+                </Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
               style={styles.list}
               horizontal={true}
@@ -105,34 +153,38 @@ const Home: React.FC = () => {
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
-                  <ListPopularNft
+                  <ListPopularCoin
                     item={item}
                     onPress={() => {
                       getCoin({id: item.id});
                     }}
+                    onFavoritePress={onFavoritePress}
                   />
                 );
               }}
             />
+
             <View style={styles.row}>
-              <Text h3 style={styles.titre}>
+              <Text h3 style={{...styles.titre, color: currentTheme.text}}>
                 Exchanges
               </Text>
-              <CustomButton
-                title="Voir tout"
-                onPress={() => {
-                  console.log('voir tout');
-                }}
-              />
+              <TouchableOpacity>
+                <Text
+                  onPress={() => console.log('See All')}
+                  style={{color: currentTheme.text, margin: 10}}>
+                  See All
+                </Text>
+              </TouchableOpacity>
             </View>
-
             <FlatList
               style={styles.list}
               horizontal={true}
               data={data.nft}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
-                return <ListNft item={item} />;
+                return (
+                  <ListExchange item={item} onFavoritePress={onFavoritePress} />
+                );
               }}
             />
           </ScrollView>
@@ -148,17 +200,17 @@ const Home: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#20243F',
   },
   list: {
     paddingLeft: 10,
   },
   titre: {
-    color: '#ffffff',
     margin: 10,
   },
   row: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 
