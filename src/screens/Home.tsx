@@ -17,7 +17,7 @@ import ListTrending from '../components/MainPage/ListTrending';
 import {useTheme} from '../hooks/useTheme';
 import {ModalContent} from '../components/MainPage/ModalCoinContent';
 
-const Home: React.FC = () => {
+const Home: React.FC = ({navigation}: any) => {
   const {makeApiCall} = useAuth();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
@@ -40,10 +40,18 @@ const Home: React.FC = () => {
             method: 'GET',
             url: 'https://api.coingecko.com/api/v3/search/trending?',
           }),
+          // makeApiCall({
+          //   method: 'GET',
+          //   url: 'https://api.coingecko.com/api/v3/nfts/list?per_page=100&page=1',
+          // }),
         ];
 
         await Promise.all(apiCalls).then(res => {
-          setData({crypto: res[0], nft: res[1], trending: res[2].nfts});
+          setData({
+            coin: res[0],
+            exchange: res[1],
+            trendingNfts: res[2].nfts,
+          });
           setLoading(false);
         });
       } catch (error) {
@@ -125,7 +133,7 @@ const Home: React.FC = () => {
               </Text>
               <TouchableOpacity>
                 <Text
-                  onPress={() => console.log('See All')}
+                  onPress={() => navigation.push('AllNft', {data: data.nfts})}
                   style={{color: currentTheme.text, margin: 10}}>
                   See All
                 </Text>
@@ -134,7 +142,7 @@ const Home: React.FC = () => {
             <FlatList
               style={styles.list}
               horizontal={true}
-              data={data.trending}
+              data={data.trendingNfts}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
@@ -164,7 +172,7 @@ const Home: React.FC = () => {
             <FlatList
               style={styles.list}
               horizontal={true}
-              data={data.crypto}
+              data={data.coin}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
@@ -194,7 +202,7 @@ const Home: React.FC = () => {
             <FlatList
               style={styles.list}
               horizontal={true}
-              data={data.nft}
+              data={data.exchange}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
