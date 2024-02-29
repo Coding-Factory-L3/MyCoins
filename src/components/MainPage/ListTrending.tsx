@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontFamily: 'Poppins-Medium',
-    maxWidth: 115,
+    maxWidth: 225,
   },
   label: {
     fontSize: 14,

@@ -1,6 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
+import useLocation from '../../hooks/useLocation';
 
 interface ModalCoinContentProps {
   item: ModalContent;
@@ -15,6 +17,8 @@ export interface ModalContent {
   price: number;
   description: string;
   icon: string;
+  currency: string;
+  image?: string;
 }
 
 function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
@@ -29,6 +33,8 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
     ? `+${formattedPriceAugmented}`
     : formattedPriceAugmented;
 
+  const {currentLocation} = useLocation();
+
   function truncateString(str: string, num: number) {
     if (str && num) {
       if (str.length <= num) {
@@ -38,6 +44,8 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
     }
   }
 
+  console.log('currentLocation', currentLocation);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.topRow}>
@@ -46,18 +54,27 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.symbol}> | {item.symbol}</Text>
           </View>
-          <Text style={styles.price}>{item.price} €</Text>
+          <Text style={styles.price}>
+            {currentLocation?.country &&
+              currentLocation?.code &&
+              item.price?.toLocaleString(
+                currentLocation?.country === 'US' ? 'en-US' : 'fr-FR',
+                {
+                  style: 'currency',
+                  currency: currentLocation?.code?.toUpperCase(),
+                },
+              )}
+          </Text>
           <View style={styles.fluctuationPriceRow}>
             <Text
               style={[
                 styles.pricePercentage,
-                // eslint-disable-next-line react-native/no-inline-styles
                 {color: isPercentagePositive ? '#2ecc71' : '#e74c3c'},
               ]}>
               {percentageText} %
             </Text>
             <Text style={styles.priceAugmented}>
-              {priceAugmentedText} € (1J)
+              {priceAugmentedText} {item.currency} (24h)
             </Text>
           </View>
         </View>
@@ -96,25 +113,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
   },
   symbol: {
-    fontSize: 22,
+    fontSize: 14,
     textTransform: 'uppercase',
+    fontFamily: 'Poppins-Regular',
   },
   descriptionTitle: {
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
     marginTop: 30,
   },
   description: {
     marginTop: 10,
     fontSize: 16,
+    fontFamily: 'Poppins-Regular',
   },
   price: {
-    fontSize: 35,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
     marginTop: 10,
   },
   fluctuationPriceRow: {
@@ -122,10 +141,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   pricePercentage: {
-    fontSize: 20,
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
   },
   priceAugmented: {
-    fontSize: 20,
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
     marginLeft: 10,
   },
 });

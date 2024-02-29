@@ -46,31 +46,25 @@ function Login({navigation}: any): React.JSX.Element {
           style={{...styles.logo, shadowColor: currentTheme.tertiary}}
         />
 
-        <Text style={{...styles.title, color: currentTheme.primary}}>
-          Login
-        </Text>
+        <Text style={{...styles.title, color: currentTheme.text}}>Login</Text>
 
         <CustomTextInput
           placeholder="Email"
           value={email}
           onChangeText={e => setEmail(e)}
-          leftIcon={
-            <Feather name="mail" size={24} color={currentTheme.primary} />
-          }
+          leftIcon={<Feather name="mail" size={24} color={currentTheme.text} />}
         />
         <CustomTextInput
           placeholder="Password"
           value={password}
           onChangeText={e => setPassword(e)}
-          leftIcon={
-            <Feather name="lock" size={24} color={currentTheme.primary} />
-          }
+          leftIcon={<Feather name="lock" size={24} color={currentTheme.text} />}
           secureTextEntry={true}
           isPassword={true}
-          iconColor={currentTheme.primary}
+          iconColor={currentTheme.text}
         />
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={{color: currentTheme.primary, textAlign: 'right'}}>
+          <Text style={{color: currentTheme.text, textAlign: 'right'}}>
             Don't have an account...
           </Text>
         </TouchableOpacity>

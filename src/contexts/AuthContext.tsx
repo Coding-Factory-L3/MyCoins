@@ -1,21 +1,21 @@
+import axios from 'axios';
 import React, {
-  createContext,
-  useState,
-  useContext,
   ReactNode,
-  useEffect,
+  createContext,
   useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
+import uuid from 'react-native-uuid';
 import {
+  ApiCallParams,
   AuthContextData,
   AuthData,
-  ApiCallParams,
-  AuthRegisterData,
-  AuthLoginData,
   AuthInfoSave,
+  AuthLoginData,
+  AuthRegisterData,
 } from '../types/AuthTypes';
-import uuid from 'react-native-uuid';
-import axios from 'axios';
 
 // Import the functions you need from the SDKs you need
 import {initializeApp} from 'firebase/app';
@@ -27,18 +27,18 @@ import {
   signOut,
 } from 'firebase/auth';
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
   getDoc,
   getDocs,
-  initializeFirestore,
+  getFirestore,
   onSnapshot,
   query,
   setDoc,
-  where,
   updateDoc,
-  arrayUnion,
-  arrayRemove,
+  where,
 } from 'firebase/firestore';
 import useToast from '../hooks/useToast';
 
@@ -52,11 +52,10 @@ const firebaseConfig = {
   appId: '1:597544437119:web:bdd50f432d6e4f0ccf464a',
 };
 // Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-});
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
@@ -338,7 +337,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       },
     );
 
-    return () => authUnsubscribe();
+    return authUnsubscribe;
   }, []);
 
   return (

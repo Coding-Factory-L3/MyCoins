@@ -95,7 +95,11 @@ const Favorites: React.FC = () => {
       </View>
       <View>
         {loading ? (
-          <ActivityIndicator size="small" color={currentTheme.text} />
+          <ActivityIndicator
+            size="small"
+            color={currentTheme.text}
+            style={{marginTop: 20}}
+          />
         ) : (
           <View>
             <FlatList
@@ -107,6 +111,7 @@ const Favorites: React.FC = () => {
                   image={item?.image?.small || item?.image}
                   name={item?.name}
                   type={type}
+                  key={item.id}
                 />
               )}
             />

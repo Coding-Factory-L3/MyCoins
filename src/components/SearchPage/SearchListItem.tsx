@@ -15,6 +15,7 @@ export interface Coin {
   symbol: string;
   pricePercentage: number;
   price: number;
+  currency: string;
 }
 
 function SearchListItem({
@@ -43,7 +44,7 @@ function SearchListItem({
           ]}>
           {percentageText} %
         </Text>
-        <Text style={styles.price}>{item.price} €</Text>
+        <Text style={styles.price}>{item.price + ' ' + item.currency}</Text>
       </View>
     </TouchableOpacity>
   );

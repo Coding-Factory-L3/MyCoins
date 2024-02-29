@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
+    textTransform: 'uppercase',
   },
   icon: {
     position: 'absolute',
