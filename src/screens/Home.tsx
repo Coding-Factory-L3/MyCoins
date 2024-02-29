@@ -4,11 +4,13 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
+  Touchable,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
-import MainItemBox from '../components/MainPage/MainItemBox';
-import {Text} from 'react-native-elements';
+import ListPopularNft from '../components/MainPage/ListPopularNft';
+import {Button, Text} from 'react-native-elements';
 import ListNft from '../components/MainPage/ListNft';
 import useModal from '../hooks/useModal';
 import ModalCoinContent from '../components/MainPage/ModalCoinContent';
@@ -30,7 +32,7 @@ const Home: React.FC = () => {
           }),
           makeApiCall({
             method: 'GET',
-            url: 'https://api.coingecko.com/api/v3/nfts/list?per_page=7&page=1',
+            url: 'https://api.coingecko.com/api/v3/exchanges?per_page=7',
           }),
           makeApiCall({
             method: 'GET',
@@ -81,7 +83,7 @@ const Home: React.FC = () => {
         <>
           <ScrollView>
             <Text h3 style={styles.titre}>
-              Trending
+              Popular Nft
             </Text>
             <FlatList
               style={styles.list}
@@ -102,7 +104,7 @@ const Home: React.FC = () => {
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
                 return (
-                  <MainItemBox
+                  <ListPopularNft
                     item={item}
                     onPress={() => {
                       getCoin({id: item.id});
@@ -111,9 +113,18 @@ const Home: React.FC = () => {
                 );
               }}
             />
-            <Text h3 style={styles.titre}>
-              Popular Nft
-            </Text>
+            <View style={styles.row}>
+              <Text h3 style={styles.titre}>
+                Exchanges
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log('voir tout');
+                }}>
+                Voir tout
+              </TouchableOpacity>
+            </View>
+
             <FlatList
               style={styles.list}
               horizontal={true}
@@ -144,6 +155,9 @@ const styles = StyleSheet.create({
   titre: {
     color: '#ffffff',
     margin: 10,
+  },
+  row: {
+    flexDirection: 'row',
   },
 });
 

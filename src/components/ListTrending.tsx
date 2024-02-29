@@ -11,6 +11,9 @@ interface MainItem {
   symbol: string;
   thumb: string;
   price_btc: number;
+  data: {
+    floor_price: number;
+  };
 }
 
 const ListTrending: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
@@ -18,10 +21,9 @@ const ListTrending: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
     <View style={styles.card}>
       <Image source={{uri: item.thumb}} style={styles.image} />
       <View style={styles.details}>
-        <Text style={styles.id}>{item.id}</Text>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.symbol}>{item.symbol}</Text>
-        <Text style={styles.priceBtc}>Price BTC: {item.price_btc}</Text>
+        <Text style={styles.priceBtc}>Price BTC: {item.data.floor_price}</Text>
       </View>
     </View>
   );
@@ -30,6 +32,7 @@ const ListTrending: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
+    marginRight: 20,
     height: 200,
     alignItems: 'center',
     backgroundColor: '#213056',

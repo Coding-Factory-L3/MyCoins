@@ -10,13 +10,14 @@ interface MainItem {
   id: string;
   name: string;
   symbol: string;
+  image: string;
 }
 
 const ListNft: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.details}>
-        <Text style={styles.id}>{item.id}</Text>
+        <Image source={{uri: item.image}} style={styles.image} />
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.symbol}>{item.symbol}</Text>
       </View>
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     height: 200,
+    marginRight: 20,
     alignItems: 'center',
     backgroundColor: '#213056',
     borderRadius: 10,
@@ -55,6 +57,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#ffffff',
   },
   symbol: {
     fontSize: 16,
