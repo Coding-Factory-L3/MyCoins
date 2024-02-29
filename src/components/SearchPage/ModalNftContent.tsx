@@ -2,33 +2,19 @@ import React from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
 
-interface ModalCoinContentProps {
-  item: ModalCoinInterface;
+interface ModalNftContentProps {
+  item: ModalNftInterface;
 }
 
-export interface ModalCoinInterface {
+export interface ModalNftInterface {
   id: string;
   name: string;
   symbol: string;
-  priceAugmented: number;
-  pricePercentage: number;
-  price: number;
   description: string;
   icon: string;
 }
 
-function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
-  const isPercentagePositive = item.pricePercentage > 0;
-  const isPriceAugmentedPositive = item.priceAugmented > 0;
-  const formattedPercentage = item.pricePercentage.toFixed(2);
-  const percentageText = isPercentagePositive
-    ? `+${formattedPercentage}`
-    : formattedPercentage;
-  const formattedPriceAugmented = item.priceAugmented.toFixed(4);
-  const priceAugmentedText = isPriceAugmentedPositive
-    ? `+${formattedPriceAugmented}`
-    : formattedPriceAugmented;
-
+function ModalNftContent({item}: ModalNftContentProps): React.JSX.Element {
   function truncateString(str: string, num: number) {
     if (str.length <= num) {
       return str;
@@ -43,20 +29,6 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
           <View style={styles.nameRow}>
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.symbol}> | {item.symbol}</Text>
-          </View>
-          <Text style={styles.price}>{item.price} €</Text>
-          <View style={styles.fluctuationPriceRow}>
-            <Text
-              style={[
-                styles.pricePercentage,
-                // eslint-disable-next-line react-native/no-inline-styles
-                {color: isPercentagePositive ? '#2ecc71' : '#e74c3c'},
-              ]}>
-              {percentageText} %
-            </Text>
-            <Text style={styles.priceAugmented}>
-              {priceAugmentedText} € (1J)
-            </Text>
           </View>
         </View>
         <Image source={{uri: item.icon}} style={styles.image} />
@@ -128,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalCoinContent;
+export default ModalNftContent;

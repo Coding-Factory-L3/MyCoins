@@ -1,19 +1,32 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {useAuth} from '../contexts/AuthContext';
 import CustomTextInput from '../components/CustomTextInput';
 import Feather from 'react-native-vector-icons/Feather';
 import theme from '../../theme';
-import SearchListItem, {Coin} from '../components/SearchPage/SearchListItem';
+import CoinListItem, {Coin} from '../components/SearchPage/CoinListItem';
 import useModal from '../hooks/useModal';
 import ModalCoinContent, {
-  ModalContent,
+  ModalCoinInterface,
 } from '../components/SearchPage/ModalCoinContent';
+import ModalNftContent, {
+  ModalNftInterface,
+} from '../components/SearchPage/ModalNftContent';
+import NftListItem, {Nft} from '../components/SearchPage/NftListItem';
 
 function Search(): React.JSX.Element {
   const {makeApiCall} = useAuth();
-  const [data, setData] = useState([] as Coin[]);
-  const [loading, setLoading] = useState(true);
+  const [coinsData, setCoinsData] = useState([] as Coin[]);
+  const [nftData, setNftData] = useState([] as Nft[]);
+  const [loadingCoins, setLoadingCoins] = useState(true);
+  const [loadingNFTs, setLoadingNFTs] = useState(true);
   const [searchValue, setSearchValue] = useState('');
   const finalSearchValue = searchValue.toLowerCase();
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
@@ -34,8 +47,8 @@ function Search(): React.JSX.Element {
           pricePercentage: coin.price_change_percentage_24h,
           price: coin.current_price,
         }));
-        setData(coins);
-        setLoading(false);
+        setCoinsData(coins);
+        setLoadingCoins(false);
       } else {
         console.error('Response is not an array:', response);
       }
@@ -44,15 +57,59 @@ function Search(): React.JSX.Element {
     }
   };
 
+  const getNftsList = async () => {
+    try {
+      const response = await makeApiCall({
+        method: 'GET',
+        url: 'https://api.coingecko.com/api/v3/nfts/list?order=market_cap_native_desc&per_page=20&page=1',
+      });
+
+      if (Array.isArray(response)) {
+        const nftIds: string[] = response.map((nft: any) => nft.id);
+        for (const id of nftIds) {
+          await getNftData(id);
+        }
+        setLoadingNFTs(false);
+      } else {
+        console.error('Response is not an array:', response);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getNftData = useCallback(
+    async (id: string) => {
+      try {
+        const response: any = await makeApiCall({
+          method: 'GET',
+          url: `https://api.coingecko.com/api/v3/nfts/${id}?`,
+        });
+
+        const nft: Nft = {
+          id: response.id,
+          name: response.name,
+          description: response.description,
+          icon: response.image.small,
+          symbol: response.symbol,
+        };
+        setNftData(prevData => [...prevData, nft]);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [makeApiCall],
+  );
+
   const getClickedCoinData = useCallback(
     async (id: string) => {
       try {
-        const response = await makeApiCall({
+        const response: any = await makeApiCall({
           method: 'GET',
           url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=true`,
         });
 
-        const coinData: ModalContent = {
+        const coinData: ModalCoinInterface = {
           id: response.id,
           name: response.name,
           description: response.description.en,
@@ -62,7 +119,6 @@ function Search(): React.JSX.Element {
           pricePercentage: response.market_data.price_change_percentage_24h,
           price: response.market_data.current_price.eur,
         };
-        // console.log(response.market_data.current_price.eur);
         setModalData(coinData);
         toggleModal();
       } catch (error) {
@@ -72,16 +128,25 @@ function Search(): React.JSX.Element {
     [makeApiCall, toggleModal, setModalData],
   );
 
-  const filteredTodoList = useMemo(() => {
-    return data.filter(
+  const filteredNftList = useMemo(() => {
+    return nftData.filter(
       item =>
         item.name.toLowerCase().includes(finalSearchValue) ||
         item.symbol.toLowerCase().includes(finalSearchValue),
     );
-  }, [data, finalSearchValue]);
+  }, [nftData, finalSearchValue]);
+
+  const filteredTodoList = useMemo(() => {
+    return coinsData.filter(
+      item =>
+        item.name.toLowerCase().includes(finalSearchValue) ||
+        item.symbol.toLowerCase().includes(finalSearchValue),
+    );
+  }, [coinsData, finalSearchValue]);
 
   useEffect(() => {
     getCoinsList();
+    getNftsList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -90,7 +155,7 @@ function Search(): React.JSX.Element {
       <View style={styles.searchInput}>
         <CustomTextInput
           autoComplete="off"
-          placeholder="Search coins..."
+          placeholder="Search coins, nfts..."
           value={searchValue}
           onChangeText={setSearchValue}
           leftIcon={
@@ -101,24 +166,45 @@ function Search(): React.JSX.Element {
             />
           }
         />
-        {loading ? (
+        {loadingCoins || loadingNFTs ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            <FlatList
-              data={filteredTodoList}
-              keyExtractor={item => item.id}
-              renderItem={({item}) => (
-                <SearchListItem
-                  item={item}
-                  onPress={() => {
-                    getClickedCoinData(item.id);
-                  }}
+            <ScrollView nestedScrollEnabled={true}>
+              <View>
+                <Text style={styles.listTitle}>NFTs :</Text>
+                <FlatList
+                  data={filteredNftList}
+                  keyExtractor={item => item.id}
+                  renderItem={({item}) => (
+                    <NftListItem
+                      item={item}
+                      onPress={() => {
+                        // Handle NFT item press
+                      }}
+                    />
+                  )}
                 />
-              )}
-            />
+              </View>
+              <View>
+                <Text style={styles.listTitle}>Cryptos :</Text>
+                <FlatList
+                  data={filteredTodoList}
+                  keyExtractor={item => item.id}
+                  renderItem={({item}) => (
+                    <CoinListItem
+                      item={item}
+                      onPress={() => {
+                        getClickedCoinData(item.id);
+                      }}
+                    />
+                  )}
+                />
+              </View>
+            </ScrollView>
             <ModalWrapper>
               <ModalCoinContent item={modalData} />
+              {/* <ModalNftContent item={modalData} /> */}
             </ModalWrapper>
           </>
         )}
@@ -134,6 +220,12 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     width: '90%',
+  },
+  listTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
   },
 });
 

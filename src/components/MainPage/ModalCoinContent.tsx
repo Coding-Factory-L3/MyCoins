@@ -1,5 +1,12 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View, Image} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
 import {Text} from 'react-native-elements';
 
 interface ModalCoinContentProps {
@@ -65,7 +72,8 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
       </View>
       <Text style={styles.descriptionTitle}>Description</Text>
       <Text style={styles.description}>
-        {truncateString(item?.description, 1000)}
+        {/* {truncateString(item?.description, 1000)} */}
+        {item.description} fjqs jqksd fjqklsdj fqklsdj fqksdjf kqlsdjf qklsdjf mqksdjf qlskdjf qklsdj flqkdf jqskdjf qksdj fqksdjf qksdjf qskdfj qskdfj qksdjf qskdj fqskdjf qksdjf
       </Text>
     </ScrollView>
   );

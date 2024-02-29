@@ -38,12 +38,12 @@ import useToast from '../hooks/useToast';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
+  apiKey: 'AIzaSyBo1BDdUIC_4Oiqqa0klf8KPP1JlvNhPwE',
+  authDomain: 'mycoins-ebac8.firebaseapp.com',
+  projectId: 'mycoins-ebac8',
+  storageBucket: 'mycoins-ebac8.appspot.com',
+  messagingSenderId: '597544437119',
+  appId: '1:597544437119:web:bdd50f432d6e4f0ccf464a',
 };
 
 // Initialize Firebase

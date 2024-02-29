@@ -17,10 +17,7 @@ export interface Coin {
   price: number;
 }
 
-function SearchListItem({
-  item,
-  onPress,
-}: SearchListItemProps): React.JSX.Element {
+function CoinListItem({item, onPress}: SearchListItemProps): React.JSX.Element {
   const isPositive = item.pricePercentage > 0;
   const formattedPercentage = item.pricePercentage.toFixed(2);
   const percentageText = isPositive
@@ -94,4 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchListItem;
+export default CoinListItem;
