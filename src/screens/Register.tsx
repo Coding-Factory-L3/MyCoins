@@ -1,5 +1,7 @@
+
 import React, {useCallback, useMemo, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+
 import CustomTextInput from '../components/CustomTextInput';
 import Feather from 'react-native-vector-icons/Feather';
 import theme from '../../theme';
@@ -14,7 +16,6 @@ function Register({navigation}: any): React.JSX.Element {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
   const {currentTheme} = useTheme();
 
   const onRegisterPress = useCallback(async () => {
@@ -30,7 +31,7 @@ function Register({navigation}: any): React.JSX.Element {
         setErrorMessage(error.message);
       }
     }
-  }, [email, username, password, confirmPassword, register]);
+}, [email, username, password, confirmPassword, register]);
 
   const isDisabled = useMemo(
     () =>

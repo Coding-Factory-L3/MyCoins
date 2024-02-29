@@ -1,43 +1,36 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
-
 interface MainItemBoxProps {
   item: MainItem;
-  onPress?: () => void;
 }
 
 interface MainItem {
-  image: string | undefined;
   id: string;
   name: string;
   symbol: string;
+  thumb: string;
+  price_btc: number;
 }
 
-const MainItemBox: React.FC<MainItemBoxProps> = ({
-  item,
-  onPress,
-}: MainItemBoxProps) => {
+const ListTrending: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image source={{uri: item.image}} style={styles.image} />
+    <View style={styles.card}>
+      <Image source={{uri: item.thumb}} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.id}>{item.id}</Text>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.symbol}>{item.symbol}</Text>
+        <Text style={styles.priceBtc}>Price BTC: {item.price_btc}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   card: {
     flexDirection: 'row',
     height: 200,
-
     alignItems: 'center',
     backgroundColor: '#213056',
     borderRadius: 10,
@@ -55,37 +48,26 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     height: 80,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     marginRight: 10,
   },
   details: {
     flex: 1,
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#ffffff',
   },
   symbol: {
     fontSize: 16,
     color: '#ffffff',
     marginBottom: 5,
   },
-  price: {
+  priceBtc: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007bff',
-    marginBottom: 5,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
     color: '#ffffff',
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: '#666666',
   },
   id: {
     fontSize: 12,
@@ -93,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainItemBox;
+export default ListTrending;

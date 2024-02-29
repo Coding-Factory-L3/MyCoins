@@ -30,8 +30,11 @@ export type AuthLoginData = {
 };
 
 export type ApiCallParams = {
-  method: 'GET';
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   url: string;
   data?: any;
   headers?: any;
+};
+export type ApiResponse<T> = {
+  data: T;
 };
