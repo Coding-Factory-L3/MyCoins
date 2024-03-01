@@ -35,7 +35,7 @@ To install the dependencies, run this command in the terminal in the root of the
 ## 3. Environment Variables
 
 Make sur when you clone the project to create a .env file and add the following variables and remove the < > :
-
+```bash
 COINGECKO_API_KEY = <Your key>
 
 FIREBASE_API_KEY = <Your key>
@@ -47,6 +47,7 @@ FIREBASE_APP_ID = <Your app ID>
 FIREBASE_MEASUREMENT_ID = <ID>
 
 GOOGLE_MAPS_API_KEY = <Your key>
+```
 
 ## 4. Start the server
 
@@ -178,18 +179,6 @@ https://www.coingecko.com/api/documentation
 
 This work has been made with students when we were in a group here is their github :
 
-<a href="https://github.com/justRunnz/MyCoins/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
-</a>
-
-<a href="https://github.com/FlorianCohenJoly/MyCoins/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins />
-</a>
-
-<a href="https://github.com/VaheKri/MyCoins/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
-</a>
-
-<a href="https://github.com/progresso85/MyCoins/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
+<a href="https://github.com/justRunnz/Trippy-Node/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=justRunnz/Trippy-Node" />
 </a>
