@@ -177,7 +177,9 @@ https://www.coingecko.com/api/documentation
 
 ## Collaborators
 
-<img src="https://avatars.githubusercontent.com/u/84150426?v=4" alt="avatar" style="border-radius: 50%" width="100" height="100"/>
-<img src="https://avatars.githubusercontent.com/u/91193629?v=4" alt="avatar" style="border-radius: 50%" width="100" height="100"/>
-<img src="https://avatars.githubusercontent.com/u/71846489?v=4" alt="avatar" style="border-radius: 50%" width="100" height="100"/>
-<img src="https://avatars.githubusercontent.com/u/91196072?v=4" alt="avatar" style="border-radius: 50%" width="100" height="100" />
+<div style="display: flex; align-items: center; margin-bottom: 20px; gap: 20px">
+    <img src="https://avatars.githubusercontent.com/u/84150426?v=4" alt="avatar" style="border-radius: 50px" width="100" height="100"/>
+    <img src="https://avatars.githubusercontent.com/u/91193629?v=4" alt="avatar" style="border-radius: 50px" width="100" height="100"/>
+    <img src="https://avatars.githubusercontent.com/u/71846489?v=4" alt="avatar" style="border-radius: 50px" width="100" height="100"/>
+    <img src="https://avatars.githubusercontent.com/u/91196072?v=4" alt="avatar" style="border-radius: 50px" width="100" height="100" />
+</div>
