@@ -3,12 +3,15 @@ import React from 'react';
 import {Image, Text} from 'react-native-elements';
 import {useAuth} from '../contexts/AuthContext';
 import useLocation from '../hooks/useLocation';
+import {useTheme} from '../hooks/useTheme';
 
 const Profile = () => {
   const {authData} = useAuth();
   const {currentLocation} = useLocation();
+  const {currentTheme} = useTheme();
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={{...styles.container, backgroundColor: currentTheme.background}}>
       <View style={styles.background_container}>
         <Image
           source={require('../assets/image/profile.jpeg')}
@@ -54,7 +57,6 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   background_container: {
     width: '100%',
