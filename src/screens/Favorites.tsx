@@ -10,7 +10,7 @@ import {
 import {useAuth} from '../contexts/AuthContext';
 import {useTheme} from '../hooks/useTheme';
 import {Text} from 'react-native-elements';
-import SearchListItem from '../components/SearchPage/SearchListItem';
+import SearchListItem from '../components/SearchPage/CoinListItem';
 import FavoriteItem from '../components/FavoritesPage/FavoriteItem';
 
 const types = ['nfts', 'coins', 'exchanges'];

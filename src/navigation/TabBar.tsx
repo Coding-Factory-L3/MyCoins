@@ -58,30 +58,6 @@ const NavigationIcon = ({route, isFocused}: any) => {
           }
         />
       );
-    case 'AllNft':
-      return (
-        <Feather
-          name="image"
-          size={24}
-          color={
-            isFocused
-              ? currentTheme.bottomTab.active
-              : currentTheme.bottomTab.inactive
-          }
-        />
-      );
-    case 'AllExchange':
-      return (
-        <Feather
-          name="book-open"
-          size={24}
-          color={
-            isFocused
-              ? currentTheme.bottomTab.active
-              : currentTheme.bottomTab.inactive
-          }
-        />
-      );
     default:
       return null;
   }

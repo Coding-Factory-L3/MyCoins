@@ -5,10 +5,10 @@ import useLocation from '../../hooks/useLocation';
 import {formatPrice} from '../../utils/utils';
 
 interface ModalCoinContentProps {
-  item: ModalContent;
+  item: ModalCoinInterface;
 }
 
-export interface ModalContent {
+export interface ModalCoinInterface {
   id: string;
   name: string;
   symbol: string;
