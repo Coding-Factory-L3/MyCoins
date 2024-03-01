@@ -10,9 +10,19 @@ interface Location {
   longitude: number;
 }
 
-const useCurrencyByLocation = (): object | null => {
+type Currency = {
+  code: string;
+  name: string;
+  symbol: string;
+  city?: string;
+  country?: string;
+};
+
+const useLocation = () => {
   const [location, setLocation] = useState<Location | null>(null);
-  const [currency, setCurrency] = useState<object | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<
+    Currency | object | null
+  >(null);
 
   const getLocation = async () => {
     Geolocation.getCurrentPosition(
@@ -35,11 +45,12 @@ const useCurrencyByLocation = (): object | null => {
       .then(res => {
         const currencyCode = res.data.currencies[0];
 
-        setCurrency({
-          code: currencyCode.code.toLowerCase(),
+        setCurrentLocation((prevState: Currency) => ({
+          ...prevState,
+          code: currencyCode.code?.toLowerCase() || 'eur',
           name: currencyCode.name,
           symbol: currencyCode.symbol,
-        });
+        }));
       })
       .catch(error => console.log('Error fetching currency:', error));
   };
@@ -71,7 +82,7 @@ const useCurrencyByLocation = (): object | null => {
           try {
             const result = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
             if (result === RESULTS.GRANTED) {
-              getLocation();
+              await getLocation();
             } else {
               console.log('Location permission denied');
             }
@@ -107,11 +118,22 @@ const useCurrencyByLocation = (): object | null => {
                 component.types.includes('country'),
             );
 
+            const localityComponent = addressComponents?.find(
+              (component: {types: string[]}) =>
+                component.types.includes('locality'),
+            );
+
             // Extract country code
             const countryCode = countryComponent?.short_name;
+            const locality = localityComponent?.long_name;
 
             // Set currency based on country code
             if (countryCode) {
+              setCurrentLocation((prevState: Currency) => ({
+                ...prevState,
+                city: locality,
+                country: countryCode,
+              }));
               await fetchCurrencyCode(countryCode);
             }
           })
@@ -120,7 +142,10 @@ const useCurrencyByLocation = (): object | null => {
     }
   }, [location]);
 
-  return currency ? currency : null;
+  return {
+    currentLocation: currentLocation as Currency,
+    setCurrentLocation,
+  };
 };
 
-export default useCurrencyByLocation;
+export default useLocation;

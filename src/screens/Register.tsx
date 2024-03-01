@@ -1,4 +1,3 @@
-
 import React, {useCallback, useMemo, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
@@ -31,7 +30,7 @@ function Register({navigation}: any): React.JSX.Element {
         setErrorMessage(error.message);
       }
     }
-}, [email, username, password, confirmPassword, register]);
+  }, [email, username, password, confirmPassword, register]);
 
   const isDisabled = useMemo(
     () =>
@@ -55,43 +54,35 @@ function Register({navigation}: any): React.JSX.Element {
           placeholder="Email"
           value={email}
           onChangeText={e => setEmail(e)}
-          leftIcon={
-            <Feather name="mail" size={24} color={currentTheme.primary} />
-          }
+          leftIcon={<Feather name="mail" size={24} color={currentTheme.text} />}
         />
 
         <CustomTextInput
           placeholder="Username"
           value={username}
           onChangeText={e => setUsername(e)}
-          leftIcon={
-            <Feather name="user" size={24} color={currentTheme.primary} />
-          }
+          leftIcon={<Feather name="user" size={24} color={currentTheme.text} />}
         />
         <CustomTextInput
           placeholder="Password"
           value={password}
           onChangeText={e => setPassword(e)}
-          leftIcon={
-            <Feather name="lock" size={24} color={currentTheme.primary} />
-          }
+          leftIcon={<Feather name="lock" size={24} color={currentTheme.text} />}
           secureTextEntry={true}
           isPassword={true}
-          iconColor={currentTheme.primary}
+          iconColor={currentTheme.text}
         />
         <CustomTextInput
           placeholder="Confirm password"
           value={confirmPassword}
           onChangeText={e => setConfirmPassword(e)}
-          leftIcon={
-            <Feather name="lock" size={24} color={currentTheme.primary} />
-          }
+          leftIcon={<Feather name="lock" size={24} color={currentTheme.text} />}
           secureTextEntry={true}
           isPassword={true}
-          iconColor={currentTheme.primary}
+          iconColor={currentTheme.text}
         />
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={{color: currentTheme.primary, textAlign: 'right'}}>
+          <Text style={{color: currentTheme.text, textAlign: 'right'}}>
             Already have an account...
           </Text>
         </TouchableOpacity>

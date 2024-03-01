@@ -1,38 +1,45 @@
+import axios from 'axios';
 import React, {
-  createContext,
-  useState,
-  useContext,
   ReactNode,
-  useEffect,
+  createContext,
   useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
+import uuid from 'react-native-uuid';
 import {
+  ApiCallParams,
   AuthContextData,
   AuthData,
-  ApiCallParams,
-  AuthRegisterData,
-  AuthLoginData,
   AuthInfoSave,
+  AuthLoginData,
+  AuthRegisterData,
 } from '../types/AuthTypes';
-import uuid from 'react-native-uuid';
-import axios from 'axios';
 
 // Import the functions you need from the SDKs you need
 import {initializeApp} from 'firebase/app';
 import {
   createUserWithEmailAndPassword,
-  getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  getReactNativePersistence,
+  initializeAuth,
 } from 'firebase/auth';
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
   getDoc,
-  initializeFirestore,
+  getDocs,
+  getFirestore,
   onSnapshot,
+  query,
   setDoc,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
 import useToast from '../hooks/useToast';
 
@@ -45,13 +52,15 @@ const firebaseConfig = {
   messagingSenderId: '597544437119',
   appId: '1:597544437119:web:bdd50f432d6e4f0ccf464a',
 };
-
 // Initialize Firebase
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage), // Provide AsyncStorage for persistence
 });
+const db = getFirestore(app);
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
@@ -137,12 +146,27 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
   async function loadStorageData({email}: {email: string}) {
     try {
-      const _unsub = onSnapshot(doc(db, 'users', email), docSnap => {
+      const _unsub = onSnapshot(doc(db, 'users', email), async docSnap => {
         console.log(docSnap?.data());
         const _authData: AuthData = {
           username: docSnap?.data()?.username || '',
           token: String(uuid.v4()),
+          email: docSnap?.data()?.email || '',
         };
+
+        const q = query(
+          collection(db, 'favorites'),
+          where('email', '==', email),
+        );
+
+        const querySnapshot = await getDocs(q);
+        const _favorites: any = [];
+
+        querySnapshot.forEach(d => {
+          _favorites.push(d.data());
+        });
+
+        _authData.favorites = _favorites[0] || {};
 
         setAuthData(_authData);
         setUnsubscribe(() => _unsub);
@@ -165,6 +189,7 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         const _authData: AuthData = {
           username: docSnap.data()?.username || '',
           token: String(uuid.v4()),
+          email: docSnap.data()?.email || '',
         };
 
         setAuthData(_authData);
@@ -176,6 +201,99 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       console.log(error);
     }
   }
+
+  const updateFavorite = async ({
+    key,
+    id,
+    value,
+  }: {
+    key: string;
+    id: any;
+    value: any;
+  }) => {
+    if (!authData) {
+      throw new Error('User not authenticated');
+    }
+
+    if (!authData.token) {
+      throw new Error('User not authenticated');
+    }
+
+    const q = query(
+      collection(db, 'favorites'),
+      where('email', '==', authData.email),
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      const _favoritesRef = doc(collection(db, 'favorites'));
+
+      await setDoc(_favoritesRef, {
+        email: authData.email,
+        [key]: [id],
+      }).then(() => {
+        // ici
+        setAuthData({
+          ...authData,
+          favorites: {
+            ...authData.favorites,
+            [key]: [id],
+          },
+        });
+      });
+
+      return Promise.resolve('Favorite updated');
+    } else {
+      querySnapshot.forEach(async d => {
+        const _favoritesRef = doc(db, d.ref.path);
+
+        if (value) {
+          await updateDoc(_favoritesRef, {
+            [key]: arrayUnion(id),
+          }).then(() => {
+            //  ici
+            if (authData.favorites) {
+              const favoritesKey = key as keyof typeof authData.favorites;
+              setAuthData({
+                ...authData,
+                favorites: {
+                  ...authData.favorites,
+                  [favoritesKey]: [
+                    ...(authData.favorites[favoritesKey] || []),
+                    id,
+                  ],
+                },
+              });
+            }
+          });
+        } else {
+          await updateDoc(_favoritesRef, {
+            [key]: arrayRemove(id),
+          }).then(() => {
+            // ici
+
+            const favoritesKey = key as keyof typeof authData.favorites;
+            if (authData.favorites) {
+              setAuthData({
+                ...authData,
+                favorites: {
+                  ...authData.favorites,
+                  [favoritesKey]: [
+                    ...(
+                      (authData.favorites[favoritesKey] as any[]) || []
+                    )?.filter((i: any) => i !== id),
+                  ],
+                },
+              });
+            }
+          });
+        }
+      });
+
+      return Promise.resolve('Favorite updated');
+    }
+  };
 
   async function makeApiCall({
     method,
@@ -224,14 +342,24 @@ const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       },
     );
 
-    return () => authUnsubscribe();
+    return authUnsubscribe;
   }, []);
 
   return (
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
     <AuthContext.Provider
-      value={{authData, loading, register, signIn, logout, makeApiCall}}>
+      value={{
+        authData,
+        loading,
+        register,
+        signIn,
+        logout,
+        makeApiCall,
+        updateFavorite: async (data: any) => {
+          await updateFavorite(data);
+        },
+      }}>
       {children}
     </AuthContext.Provider>
   );

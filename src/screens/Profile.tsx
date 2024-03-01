@@ -3,6 +3,12 @@ import React from 'react';
 import {Image, Text} from 'react-native-elements';
 
 const Profile = () => {
+import {useAuth} from '../contexts/AuthContext';
+import useLocation from '../hooks/useLocation';
+
+const Profile: React.FC = () => {
+  const {authData} = useAuth();
+  const {currentLocation} = useLocation();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.background_container}>
@@ -32,14 +38,20 @@ const Profile = () => {
             <Text>Followings</Text>
           </View>
         </View>
+        <Text h3>{authData?.username ? authData.username : 'Username'}</Text>
+        <Text h4>
+          {currentLocation ? currentLocation.city : 'Location not found'}
+        </Text>
+
+
         <View style={styles.btn_container}>
           <TouchableOpacity style={styles.edit_container}>
             <Text>Edit Profile</Text>
           </TouchableOpacity>
-
           <TouchableOpacity style={styles.edit_container}>
             <Text>Add Friends</Text>
           </TouchableOpacity>
+
         </View>
       </View>
     </SafeAreaView>

@@ -1,5 +1,12 @@
 // ThemeContext.tsx
-import React, {createContext, useContext, useState, ReactNode} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Theme = 'light' | 'dark';
 
@@ -17,6 +24,17 @@ interface ThemeColors {
     active: string;
     inactive: string;
     shadow?: string;
+  };
+  favorite: {
+    active: string;
+    inactive: string;
+  };
+  flag: {
+    text: string;
+    background: string;
+    selectedText?: string;
+    selectedBackground?: string;
+    border?: string;
   };
 }
 
@@ -42,7 +60,7 @@ const defaultThemeConfig: ThemeConfig = {
       tertiary: '#A9A9C5',
       text: '#1C1C1C',
       error: '#FF0000',
-      switch: '#1C1C1C',
+      switch: '#333252',
       textButton: '#EBECF1',
 
       bottomTab: {
@@ -50,6 +68,19 @@ const defaultThemeConfig: ThemeConfig = {
         active: '#EBECF1',
         inactive: '#908DB8',
         shadow: '#333252',
+      },
+
+      favorite: {
+        active: '#FF0000',
+        inactive: '#333252',
+      },
+
+      flag: {
+        text: '#EBECF1',
+        background: '#908DB8',
+        selectedText: '#908DB8',
+        selectedBackground: '#EBECF1',
+        border: '#908DB8',
       },
     },
     dark: {
@@ -67,6 +98,19 @@ const defaultThemeConfig: ThemeConfig = {
         active: '#EBECF1',
         inactive: '#4B4B4B',
         shadow: '#EBECF1',
+      },
+
+      favorite: {
+        active: '#FF0000',
+        inactive: '#EBECF1',
+      },
+
+      flag: {
+        text: '#1C1C1C',
+        background: '#EBECF1',
+        selectedText: '#EBECF1',
+        selectedBackground: '#1C1C1C',
+        border: '#EBECF1',
       },
     },
   },
@@ -88,7 +132,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     setCurrentTheme(defaultThemeConfig.colors[newTheme]);
+    AsyncStorage.setItem('@Theme', newTheme);
   };
+
+  useEffect(() => {
+    AsyncStorage.getItem('@Theme').then(t => {
+      if (t) {
+        setTheme(t as Theme);
+        setCurrentTheme(defaultThemeConfig.colors[theme as Theme]);
+      }
+    });
+  }, [theme]);
 
   return (
     <ThemeContext.Provider value={{theme, currentTheme, toggleTheme}}>

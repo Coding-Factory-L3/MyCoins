@@ -1,7 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Image, Text} from 'react-native-elements';
-import theme from '../../../theme';
+import {useTheme} from '../../hooks/useTheme';
+import useLocation from '../../hooks/useLocation';
+import {formatPrice} from '../../utils/utils';
 
 interface SearchListItemProps {
   item: Coin;
@@ -15,6 +18,7 @@ export interface Coin {
   symbol: string;
   pricePercentage: number;
   price: number;
+  currency: string;
 }
 
 function SearchListItem({
@@ -27,23 +31,38 @@ function SearchListItem({
     ? `+${formattedPercentage}`
     : formattedPercentage;
 
+  const {currentTheme} = useTheme();
+  const {currentLocation} = useLocation();
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        {
+          borderBottomColor: currentTheme.secondary,
+        },
+      ]}
+      onPress={onPress}>
       <Image source={{uri: item.icon}} style={styles.icon} />
       <View>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.symbol}>{item.symbol}</Text>
+        <Text style={[styles.name, {color: currentTheme.text}]}>
+          {item.name}
+        </Text>
+        <Text style={[styles.symbol, {color: currentTheme.text}]}>
+          {item.symbol}
+        </Text>
       </View>
       <View style={styles.priceContainer}>
         <Text
           style={[
             styles.percentage,
-            // eslint-disable-next-line react-native/no-inline-styles
             {color: isPositive ? '#2ecc71' : '#e74c3c'},
           ]}>
           {percentageText} %
         </Text>
-        <Text style={styles.price}>{item.price} €</Text>
+        <Text style={[styles.price, {color: currentTheme.text}]}>
+          {formatPrice(item.price, currentLocation)}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -51,13 +70,12 @@ function SearchListItem({
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: theme.colors.light.primary,
     flexDirection: 'row',
     position: 'relative',
     alignItems: 'center',
     height: 80,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.light.primary,
+    // borderBottomColor: theme.colors.light.primary,
     width: '100%',
   },
   icon: {
@@ -67,13 +85,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   name: {
-    fontWeight: '600',
-    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 18,
   },
   symbol: {
     marginTop: 5,
-    fontSize: 20,
-    fontWeight: '400',
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
     textTransform: 'uppercase',
   },
   priceContainer: {
@@ -84,14 +102,14 @@ const styles = StyleSheet.create({
   },
   percentage: {
     textAlign: 'right',
-    fontWeight: '400',
-    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
   },
   price: {
     textAlign: 'right',
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
   },
 });
 
-export default SearchListItem;
+export default React.memo(SearchListItem);

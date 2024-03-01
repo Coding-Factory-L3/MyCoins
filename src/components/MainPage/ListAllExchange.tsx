@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useAuth} from '../../contexts/AuthContext';
@@ -11,18 +11,16 @@ interface MainItemBoxProps {
 }
 
 interface MainItem {
-  image: string | undefined;
   id: string;
   name: string;
-  symbol: string;
 }
 
-const ListPopularCoin: React.FC<MainItemBoxProps> = ({
+const ListAllExchange: React.FC<MainItemBoxProps> = ({
   item,
   onPress,
 }: MainItemBoxProps) => {
   const {currentTheme} = useTheme();
-  const {updateFavorite, authData} = useAuth();
+  const {authData, updateFavorite} = useAuth();
 
   const [isFavoriteState, setIsFavoriteState] = useState(false);
 
@@ -30,8 +28,8 @@ const ListPopularCoin: React.FC<MainItemBoxProps> = ({
     if (
       authData &&
       authData.favorites &&
-      authData.favorites.coins &&
-      authData.favorites.coins.includes(item.id)
+      authData.favorites.exchanges &&
+      authData.favorites.exchanges.includes(item.id)
     ) {
       setIsFavoriteState(true);
     } else {
@@ -40,28 +38,33 @@ const ListPopularCoin: React.FC<MainItemBoxProps> = ({
   }, [authData, item.id]);
 
   const onFavoritePress = async (id: string) => {
-    await updateFavorite({key: 'coins', id, value: !isFavoriteState});
-    setIsFavoriteState(!isFavoriteState);
+    await updateFavorite({key: 'exchanges', id, value: !isFavoriteState}).then(
+      () => {
+        setIsFavoriteState(!isFavoriteState);
+      },
+    );
   };
 
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={[
         styles.card,
         {
           backgroundColor: currentTheme.primary,
           shadowColor: currentTheme.tertiary,
         },
-      ]}
-      onPress={onPress}>
-      <TouchableOpacity
-        style={styles.icon}
-        onPress={() => {
-          onFavoritePress(item.id);
-        }}>
+      ]}>
+      <Text
+        style={[styles.name, {color: currentTheme.textButton}]}
+        ellipsizeMode="tail"
+        numberOfLines={1}>
+        {item.name}
+      </Text>
+      <TouchableOpacity onPress={() => onFavoritePress(item.id)}>
         <AntDesign
           name="heart"
-          size={20}
+          size={24}
           color={
             isFavoriteState
               ? currentTheme.favorite.active
@@ -69,33 +72,21 @@ const ListPopularCoin: React.FC<MainItemBoxProps> = ({
           }
         />
       </TouchableOpacity>
-      <Image source={{uri: item.image}} style={styles.image} />
-      <View style={styles.details}>
-        <Text
-          style={[styles.name, {color: currentTheme.textButton}]}
-          ellipsizeMode="tail"
-          numberOfLines={1}>
-          {item.name}
-        </Text>
-        <Text style={[styles.label, {color: currentTheme.textButton}]}>
-          {item.symbol}
-        </Text>
-      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   card: {
     flexDirection: 'row',
-    marginRight: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    marginBottom: 20,
     minWidth: 250,
-
     borderRadius: 10,
-    padding: 10,
+
     shadowOffset: {
       width: 0,
       height: 2,
@@ -104,32 +95,23 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  image: {
-    width: 70,
-    height: 70,
-    resizeMode: 'cover',
-    marginRight: 10,
-    borderRadius: 10,
-  },
-  details: {
-    flex: 1,
-  },
   name: {
     fontSize: 20,
     fontFamily: 'Poppins-Medium',
-    maxWidth: 115,
+    maxWidth: 225,
   },
-  label: {
+  symbol: {
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
-    textTransform: 'uppercase',
+    textTransform: 'capitalize',
+    marginTop: 2,
   },
   icon: {
     position: 'absolute',
-    right: 10,
-    top: 10,
+    right: 15,
+    top: 15,
     zIndex: 1,
   },
 });
 
-export default ListPopularCoin;
+export default ListAllExchange;
