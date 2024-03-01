@@ -142,7 +142,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
         setCurrentTheme(defaultThemeConfig.colors[theme as Theme]);
       }
     });
-    console.log('Theme:', theme);
   }, [theme]);
 
   return (
