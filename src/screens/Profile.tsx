@@ -21,9 +21,11 @@ const Profile = () => {
           source={require('../assets/image/profile_logo.jpeg')}
           style={styles.logo}
         />
-        <Text h3>name</Text>
+        <Text h3>{authData?.username ? authData.username : 'Username'}</Text>
         <Text h4>Job</Text>
-        <Text h4>Localisation</Text>
+        <Text h4>
+          {currentLocation ? currentLocation.city : 'Location not found'}
+        </Text>
 
         <View style={styles.rs_container}>
           <View style={styles.followers_container}>
@@ -36,11 +38,6 @@ const Profile = () => {
             <Text>Followings</Text>
           </View>
         </View>
-        <Text h3>{authData?.username ? authData.username : 'Username'}</Text>
-        <Text h4>
-          {currentLocation ? currentLocation.city : 'Location not found'}
-        </Text>
-
         <View style={styles.btn_container}>
           <TouchableOpacity style={styles.edit_container}>
             <Text>Edit Profile</Text>
