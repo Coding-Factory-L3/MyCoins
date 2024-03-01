@@ -4,6 +4,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Image, Text} from 'react-native-elements';
 import {useTheme} from '../../hooks/useTheme';
 import useLocation from '../../hooks/useLocation';
+import {formatPrice} from '../../utils/utils';
 
 interface SearchListItemProps {
   item: Coin;
@@ -57,15 +58,7 @@ function CoinListItem({item, onPress}: SearchListItemProps): React.JSX.Element {
           {percentageText} %
         </Text>
         <Text style={[styles.price, {color: currentTheme.text}]}>
-          {currentLocation?.country &&
-            currentLocation?.code &&
-            item.price?.toLocaleString(
-              currentLocation?.country === 'US' ? 'en-US' : 'fr-FR',
-              {
-                style: 'currency',
-                currency: currentLocation?.code?.toUpperCase(),
-              },
-            )}
+          {formatPrice(item.price, currentLocation)}
         </Text>
       </View>
     </TouchableOpacity>
