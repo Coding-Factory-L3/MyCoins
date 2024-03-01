@@ -179,6 +179,6 @@ https://www.coingecko.com/api/documentation
 
 This work has been made with students when we were in a group here is their github :
 
-<a href="https://github.com/justRunnz/Trippy-Node/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=justRunnz/Trippy-Node" />
+<a href="https://github.com/Coding-Factory-L3/MyCoins/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
 </a>
