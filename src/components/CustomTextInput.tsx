@@ -65,6 +65,8 @@ function CustomTextInput({
         onBlur={() => setIsFocused(false)}
         errorStyle={{display: 'none'}}
         autoCapitalize="none"
+        style={{color: currentTheme.text}}
+        placeholderTextColor={currentTheme.text}
       />
 
       {isPassword && (
@@ -74,13 +76,13 @@ function CustomTextInput({
             <Feather
               name="eye"
               size={24}
-              color={iconColor ? iconColor : 'black'}
+              color={iconColor ? iconColor : currentTheme.text}
             />
           ) : (
             <Feather
               name="eye-off"
               size={24}
-              color={iconColor ? iconColor : 'black'}
+              color={iconColor ? iconColor : currentTheme.text}
             />
           )}
         </TouchableOpacity>

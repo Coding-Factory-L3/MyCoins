@@ -15,6 +15,7 @@ export interface ModalContent {
   price: number;
   description: string;
   icon: string;
+  currency: string;
 }
 
 function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
@@ -44,7 +45,7 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.symbol}> | {item.symbol}</Text>
           </View>
-          <Text style={styles.price}>{item.price} €</Text>
+          <Text style={styles.price}>{item.price + ' ' + item.currency}</Text>
           <View style={styles.fluctuationPriceRow}>
             <Text
               style={[
@@ -55,7 +56,7 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
               {percentageText} %
             </Text>
             <Text style={styles.priceAugmented}>
-              {priceAugmentedText} € (1J)
+              {priceAugmentedText} {item.currency} (24h)
             </Text>
           </View>
         </View>

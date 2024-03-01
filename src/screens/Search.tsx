@@ -9,6 +9,7 @@ import useModal from '../hooks/useModal';
 import ModalCoinContent, {
   ModalContent,
 } from '../components/SearchPage/ModalCoinContent';
+import useLocation from '../hooks/useLocation';
 
 function Search(): React.JSX.Element {
   const {makeApiCall} = useAuth();
@@ -17,12 +18,13 @@ function Search(): React.JSX.Element {
   const [searchValue, setSearchValue] = useState('');
   const finalSearchValue = searchValue.toLowerCase();
   const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
+  const {currentLocation} = useLocation();
 
   const getCoinsList = async () => {
     try {
       const response = await makeApiCall({
         method: 'GET',
-        url: 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=250&page=1&sparkline=false&locale=en',
+        url: `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currentLocation?.code}&order=market_cap_desc&per_page=250&page=1&sparkline=false&locale=en`,
       });
 
       if (Array.isArray(response)) {
@@ -33,6 +35,7 @@ function Search(): React.JSX.Element {
           symbol: coin.symbol,
           pricePercentage: coin.price_change_percentage_24h,
           price: coin.current_price,
+          currency: currentLocation.symbol,
         }));
         setData(coins);
         setLoading(false);
@@ -47,7 +50,7 @@ function Search(): React.JSX.Element {
   const getClickedCoinData = useCallback(
     async (id: string) => {
       try {
-        const response = await makeApiCall({
+        const response: any = await makeApiCall({
           method: 'GET',
           url: `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=true`,
         });
@@ -58,9 +61,13 @@ function Search(): React.JSX.Element {
           description: response.description.en,
           icon: response.image.large,
           symbol: response.symbol,
-          priceAugmented: response.market_data.price_change_24h_in_currency.eur,
+          priceAugmented:
+            response.market_data.price_change_24h_in_currency[
+              currentLocation?.code
+            ],
           pricePercentage: response.market_data.price_change_percentage_24h,
-          price: response.market_data.current_price.eur,
+          price: response.market_data.current_price[currentLocation?.code],
+          currency: currentLocation.symbol,
         };
         // console.log(response.market_data.current_price.eur);
         setModalData(coinData);
@@ -69,7 +76,7 @@ function Search(): React.JSX.Element {
         console.error(error);
       }
     },
-    [makeApiCall, toggleModal, setModalData],
+    [makeApiCall, toggleModal, setModalData, currentLocation?.code],
   );
 
   const filteredTodoList = useMemo(() => {

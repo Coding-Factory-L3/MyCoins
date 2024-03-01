@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useAuth} from '../../contexts/AuthContext';
 import {useTheme} from '../../hooks/useTheme';
-import Feather from 'react-native-vector-icons/Feather';
 
 interface MainItemBoxProps {
   item: MainItem;
   onPress?: () => void;
-  onFavoritePress: (id: string) => void;
 }
 
 interface MainItem {
@@ -20,9 +20,29 @@ interface MainItem {
 const ListPopularCoin: React.FC<MainItemBoxProps> = ({
   item,
   onPress,
-  onFavoritePress,
 }: MainItemBoxProps) => {
   const {currentTheme} = useTheme();
+  const {updateFavorite, authData} = useAuth();
+
+  const [isFavoriteState, setIsFavoriteState] = useState(false);
+
+  useEffect(() => {
+    if (
+      authData &&
+      authData.favorites &&
+      authData.favorites.coins &&
+      authData.favorites.coins.includes(item.id)
+    ) {
+      setIsFavoriteState(true);
+    } else {
+      setIsFavoriteState(false);
+    }
+  }, [authData, item.id]);
+
+  const onFavoritePress = async (id: string) => {
+    await updateFavorite({key: 'coins', id, value: !isFavoriteState});
+    setIsFavoriteState(!isFavoriteState);
+  };
 
   return (
     <TouchableOpacity
@@ -34,18 +54,32 @@ const ListPopularCoin: React.FC<MainItemBoxProps> = ({
         },
       ]}
       onPress={onPress}>
+      <TouchableOpacity
+        style={styles.icon}
+        onPress={() => {
+          onFavoritePress(item.id);
+        }}>
+        <AntDesign
+          name="heart"
+          size={20}
+          color={
+            isFavoriteState
+              ? currentTheme.favorite.active
+              : currentTheme.favorite.inactive
+          }
+        />
+      </TouchableOpacity>
       <Image source={{uri: item.image}} style={styles.image} />
       <View style={styles.details}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.symbol}>{item.symbol}</Text>
-        <Feather
-          name="heart"
-          size={24}
-          color="#ffffff"
-          onPress={() => {
-            onFavoritePress(item.id);
-          }}
-        />
+        <Text
+          style={[styles.name, {color: currentTheme.textButton}]}
+          ellipsizeMode="tail"
+          numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={[styles.label, {color: currentTheme.textButton}]}>
+          {item.symbol}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -57,59 +91,44 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    height: 200,
     marginRight: 20,
-    alignItems: 'center',
+    minWidth: 250,
+
     borderRadius: 10,
-    padding: 20,
-    marginBottom: 10,
+    padding: 10,
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
   image: {
-    width: 80,
-    height: 80,
-    resizeMode: 'contain',
+    width: 70,
+    height: 70,
+    resizeMode: 'cover',
     marginRight: 10,
+    borderRadius: 10,
   },
   details: {
     flex: 1,
   },
   name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#ffffff',
+    fontSize: 20,
+    fontFamily: 'Poppins-Medium',
+    maxWidth: 115,
   },
-  symbol: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 5,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007bff',
-    marginBottom: 5,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 5,
-  },
-  description: {
+  label: {
     fontSize: 14,
-    color: '#666666',
+    fontFamily: 'Poppins-Regular',
+    textTransform: 'uppercase',
   },
-  id: {
-    fontSize: 12,
-    color: '#ffffff',
+  icon: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    zIndex: 1,
   },
 });
 
