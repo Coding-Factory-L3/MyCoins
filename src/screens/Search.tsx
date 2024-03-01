@@ -128,6 +128,30 @@ function Search(): React.JSX.Element {
     [makeApiCall, toggleModal, setModalData],
   );
 
+  const getClickedNftData = useCallback(
+    async (id: string) => {
+      try {
+        const response: any = await makeApiCall({
+          method: 'GET',
+          url: `https://api.coingecko.com/api/v3/nfts/${id}?`,
+        });
+
+        const nftDatas: ModalNftInterface = {
+          id: response.id,
+          name: response.name,
+          description: response.description,
+          icon: response.image.small,
+          symbol: response.symbol,
+        };
+        setModalData(nftDatas);
+        toggleModal();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [makeApiCall, toggleModal, setModalData],
+  );
+
   const filteredNftList = useMemo(() => {
     return nftData.filter(
       item =>
@@ -180,7 +204,7 @@ function Search(): React.JSX.Element {
                     <NftListItem
                       item={item}
                       onPress={() => {
-                        // Handle NFT item press
+                        getClickedNftData(item.id);
                       }}
                     />
                   )}
@@ -203,8 +227,11 @@ function Search(): React.JSX.Element {
               </View>
             </ScrollView>
             <ModalWrapper>
-              <ModalCoinContent item={modalData} />
-              {/* <ModalNftContent item={modalData} /> */}
+              {modalData.price === undefined ? (
+                <ModalNftContent item={modalData} />
+              ) : (
+                <ModalCoinContent item={modalData} />
+              )}
             </ModalWrapper>
           </>
         )}

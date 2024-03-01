@@ -15,12 +15,12 @@ export interface ModalNftInterface {
 }
 
 function ModalNftContent({item}: ModalNftContentProps): React.JSX.Element {
-  function truncateString(str: string, num: number) {
-    if (str.length <= num) {
-      return str;
-    }
-    return str.slice(0, num) + '...';
-  }
+  // function truncateString(str: string, num: number) {
+  //   if (str.length <= num) {
+  //     return str;
+  //   }
+  //   return str.slice(0, num) + '...';
+  // }
 
   return (
     <ScrollView style={styles.container}>
@@ -35,7 +35,8 @@ function ModalNftContent({item}: ModalNftContentProps): React.JSX.Element {
       </View>
       <Text style={styles.descriptionTitle}>Description</Text>
       <Text style={styles.description}>
-        {truncateString(item.description, 1000)}
+        {/* {truncateString(item.description, 1000)} */}
+        {item.description}
       </Text>
     </ScrollView>
   );
