@@ -2,7 +2,7 @@
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
-import {PermissionsAndroid, Platform} from 'react-native';
+import {Alert, PermissionsAndroid, Platform, Linking} from 'react-native';
 import {PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 interface Location {
@@ -55,6 +55,33 @@ const useLocation = () => {
       .catch(error => console.log('Error fetching currency:', error));
   };
 
+  const showSettingsAlert = () => {
+    Alert.alert(
+      'Location Permission Denied',
+      'To enable location services, please go to the app settings and grant location access.',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Go to Settings',
+          onPress: () => openAppSettings(),
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const openAppSettings = () => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:');
+    } else {
+      Linking.openSettings();
+    }
+  };
+
   useEffect(() => {
     // Check and request location permissions
     const requestLocationPermissions = async () => {
@@ -74,6 +101,8 @@ const useLocation = () => {
               getLocation();
             } else {
               console.log('Location permission denied');
+              // Retry permission request if denied
+              showSettingsAlert();
             }
           } catch (err) {
             console.warn(err);
@@ -85,6 +114,8 @@ const useLocation = () => {
               await getLocation();
             } else {
               console.log('Location permission denied');
+              // Retry permission request if denied
+              showSettingsAlert();
             }
           } catch (err) {
             console.warn(err);
