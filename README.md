@@ -179,6 +179,7 @@ https://www.coingecko.com/api/documentation
 
 This work has been made with students when we were in a group here is their github :
 
-<a href="https://github.com/Coding-Factory-L3/MyCoins/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
-</a>
+<img src="https://avatars.githubusercontent.com/u/84150426?v=4" />
+<img src="https://avatars.githubusercontent.com/u/91193629?v=4" />
+<img src="https://avatars.githubusercontent.com/u/71846489?v=4" />
+<img src="https://avatars.githubusercontent.com/u/91196072?v=4" />    
