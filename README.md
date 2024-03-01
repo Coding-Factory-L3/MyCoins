@@ -178,18 +178,18 @@ https://www.coingecko.com/api/documentation
 
 This work has been made with students when we were in a group here is their github :
 
-<a href="https://github.com/justRunnz/Trippy-Node/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=justRunnz/MyCoins" />
+<a href="https://github.com/justRunnz/MyCoins/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
 </a>
 
-<a href="https://github.com/FlorianCohenJoly/Trippy-Node/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=FlorianCohenJoly/MyCoins />
+<a href="https://github.com/FlorianCohenJoly/MyCoins/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins />
 </a>
 
-<a href="https://github.com/https://github.com/VaheKri/Trippy-Node/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=https://github.com/VaheKri/MyCoins" />
+<a href="https://github.com/VaheKri/MyCoins/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
 </a>
 
-<a href="https://github.com/https://github.com/progresso85/Trippy-Node/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=https://github.com/progresso85/MyCoins" />
+<a href="https://github.com/progresso85/MyCoins/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Coding-Factory-L3/MyCoins" />
 </a>
