@@ -1,12 +1,10 @@
 import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {Image, Text} from 'react-native-elements';
-
-const Profile = () => {
 import {useAuth} from '../contexts/AuthContext';
 import useLocation from '../hooks/useLocation';
 
-const Profile: React.FC = () => {
+const Profile = () => {
   const {authData} = useAuth();
   const {currentLocation} = useLocation();
   return (
@@ -43,7 +41,6 @@ const Profile: React.FC = () => {
           {currentLocation ? currentLocation.city : 'Location not found'}
         </Text>
 
-
         <View style={styles.btn_container}>
           <TouchableOpacity style={styles.edit_container}>
             <Text>Edit Profile</Text>
@@ -51,7 +48,6 @@ const Profile: React.FC = () => {
           <TouchableOpacity style={styles.edit_container}>
             <Text>Add Friends</Text>
           </TouchableOpacity>
-
         </View>
       </View>
     </SafeAreaView>
