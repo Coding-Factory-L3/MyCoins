@@ -1,17 +1,12 @@
-import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  Touchable,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
-import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useAuth} from '../../contexts/AuthContext';
+import {useTheme} from '../../hooks/useTheme';
 
 interface MainItemBoxProps {
   item: MainItem;
-  onFavoritePress: (id: string) => void;
   onPress?: () => void;
 }
 
@@ -22,24 +17,61 @@ interface MainItem {
 
 const ListAllExchange: React.FC<MainItemBoxProps> = ({
   item,
-  onFavoritePress,
   onPress,
 }: MainItemBoxProps) => {
+  const {currentTheme} = useTheme();
+  const {authData, updateFavorite} = useAuth();
+
+  const [isFavoriteState, setIsFavoriteState] = useState(false);
+
+  useEffect(() => {
+    if (
+      authData &&
+      authData.favorites &&
+      authData.favorites.exchanges &&
+      authData.favorites.exchanges.includes(item.id)
+    ) {
+      setIsFavoriteState(true);
+    } else {
+      setIsFavoriteState(false);
+    }
+  }, [authData, item.id]);
+
+  const onFavoritePress = async (id: string) => {
+    await updateFavorite({key: 'exchanges', id, value: !isFavoriteState}).then(
+      () => {
+        setIsFavoriteState(!isFavoriteState);
+      },
+    );
+  };
+
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.card}>
-        <View style={styles.details}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Feather
-            name="heart"
-            size={24}
-            color="#ffffff"
-            onPress={() => {
-              onFavoritePress(item.id);
-            }}
-          />
-        </View>
-      </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.card,
+        {
+          backgroundColor: currentTheme.primary,
+          shadowColor: currentTheme.tertiary,
+        },
+      ]}>
+      <Text
+        style={[styles.name, {color: currentTheme.textButton}]}
+        ellipsizeMode="tail"
+        numberOfLines={1}>
+        {item.name}
+      </Text>
+      <TouchableOpacity onPress={() => onFavoritePress(item.id)}>
+        <AntDesign
+          name="heart"
+          size={24}
+          color={
+            isFavoriteState
+              ? currentTheme.favorite.active
+              : currentTheme.favorite.inactive
+          }
+        />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
@@ -47,13 +79,14 @@ const ListAllExchange: React.FC<MainItemBoxProps> = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    height: 200,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#213056',
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    minWidth: 250,
     borderRadius: 10,
-    padding: 20,
-    marginBottom: 10,
-    shadowColor: '#000',
+
     shadowOffset: {
       width: 0,
       height: 2,
@@ -62,30 +95,22 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  image: {
-    width: 80,
-    height: 80,
-    resizeMode: 'contain',
-    marginRight: 10,
-  },
-  details: {
-    flex: 1,
-  },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#ffffff',
+    fontFamily: 'Poppins-Medium',
+    maxWidth: 225,
   },
   symbol: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 5,
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
+    textTransform: 'capitalize',
+    marginTop: 2,
   },
-
-  id: {
-    fontSize: 12,
-    color: '#ffffff',
+  icon: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
+    zIndex: 1,
   },
 });
 

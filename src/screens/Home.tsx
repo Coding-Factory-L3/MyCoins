@@ -133,7 +133,6 @@ const Home: React.FC = ({navigation}: any) => {
         }),
       ]).then((res: any) => {
         const response = res[0];
-        console.log('response', JSON.stringify(response, null, 2));
 
         const nftData: ModalNftContentProps = {
           id: response?.id,

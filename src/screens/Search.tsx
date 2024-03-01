@@ -10,6 +10,13 @@ import ModalCoinContent, {
   ModalContent,
 } from '../components/SearchPage/ModalCoinContent';
 import useLocation from '../hooks/useLocation';
+import {useTheme} from '../hooks/useTheme';
+import Fuse from 'fuse.js';
+
+const fuseOptions = {
+  keys: ['name', 'symbol'], // specify the fields you want to search in
+  threshold: 0.3,
+};
 
 function Search(): React.JSX.Element {
   const {makeApiCall} = useAuth();
@@ -17,11 +24,17 @@ function Search(): React.JSX.Element {
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState('');
   const finalSearchValue = searchValue.toLowerCase();
-  const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
+  const [modalData, setModalData] = useState({} as ModalContent);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const {ModalComponent} = useModal();
   const {currentLocation} = useLocation();
+  const {currentTheme} = useTheme();
 
   const getCoinsList = async () => {
     try {
+      if (!currentLocation?.code) return;
+
       const response = await makeApiCall({
         method: 'GET',
         url: `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currentLocation?.code}&order=market_cap_desc&per_page=250&page=1&sparkline=false&locale=en`,
@@ -69,31 +82,39 @@ function Search(): React.JSX.Element {
           price: response.market_data.current_price[currentLocation?.code],
           currency: currentLocation.symbol,
         };
-        // console.log(response.market_data.current_price.eur);
+
         setModalData(coinData);
-        toggleModal();
+        setIsModalVisible(true);
       } catch (error) {
         console.error(error);
       }
     },
-    [makeApiCall, toggleModal, setModalData, currentLocation?.code],
+    [makeApiCall, currentLocation?.code, currentLocation?.symbol],
   );
 
   const filteredTodoList = useMemo(() => {
-    return data.filter(
-      item =>
-        item.name.toLowerCase().includes(finalSearchValue) ||
-        item.symbol.toLowerCase().includes(finalSearchValue),
-    );
+    const fuse = new Fuse(data, fuseOptions);
+
+    if (finalSearchValue) {
+      return fuse.search(finalSearchValue).map(result => result.item);
+    }
+    return data;
   }, [data, finalSearchValue]);
 
   useEffect(() => {
-    getCoinsList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    (async () => {
+      await getCoinsList();
+    })();
+  }, [currentLocation?.code]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: currentTheme.background,
+        },
+      ]}>
       <View style={styles.searchInput}>
         <CustomTextInput
           autoComplete="off"
@@ -101,19 +122,16 @@ function Search(): React.JSX.Element {
           value={searchValue}
           onChangeText={setSearchValue}
           leftIcon={
-            <Feather
-              name="search"
-              size={24}
-              color={theme.colors.light.primary}
-            />
+            <Feather name="search" size={24} color={currentTheme.text} />
           }
         />
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color={currentTheme.text} />
         ) : (
           <>
             <FlatList
               data={filteredTodoList}
+              contentContainerStyle={{paddingBottom: 200}}
               keyExtractor={item => item.id}
               renderItem={({item}) => (
                 <SearchListItem
@@ -124,9 +142,11 @@ function Search(): React.JSX.Element {
                 />
               )}
             />
-            <ModalWrapper>
+            <ModalComponent
+              isVisible={isModalVisible}
+              closeModal={() => setIsModalVisible(false)}>
               <ModalCoinContent item={modalData} />
-            </ModalWrapper>
+            </ModalComponent>
           </>
         )}
       </View>
