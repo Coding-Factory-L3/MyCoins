@@ -51,7 +51,7 @@ const Home: React.FC = ({navigation}: any) => {
           makeApiCall({
             method: 'GET',
             url: `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${
-              currentLocation?.code || 'eur'
+              currentLocation?.code || 'usd'
             }&order=market_cap_desc&per_page=7&page=1&sparkline=false&locale=fr`,
           }),
           makeApiCall({
@@ -102,15 +102,15 @@ const Home: React.FC = ({navigation}: any) => {
             description: response?.description.en,
             icon: response?.image.large,
             symbol: response?.symbol,
-            currency: currentLocation?.symbol || '€',
+            currency: currentLocation?.symbol || '$',
             priceAugmented:
               response?.market_data.price_change_24h_in_currency[
-                currentLocation?.code || 'eur'
+                currentLocation?.code || 'usd'
               ],
             pricePercentage: response?.market_data.price_change_percentage_24h,
             price:
               response?.market_data.current_price[
-                currentLocation?.code || 'eur'
+                currentLocation?.code || 'usd'
               ],
           };
 
@@ -143,8 +143,8 @@ const Home: React.FC = ({navigation}: any) => {
             small: response?.image.small,
           },
           symbol: response?.symbol,
-          price: response?.floor_price[currentLocation?.code || 'eur'],
-          currency: currentLocation?.symbol || '€',
+          price: response?.floor_price[currentLocation?.code || 'usd'],
+          currency: currentLocation?.symbol || '$',
         };
 
         setNftModalData(nftData);

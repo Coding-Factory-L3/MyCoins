@@ -3,6 +3,7 @@ import React from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
 import useLocation from '../../hooks/useLocation';
+import {formatPrice} from '../../utils/utils';
 
 interface ModalCoinContentProps {
   item: ModalContent;
@@ -44,8 +45,6 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
     }
   }
 
-  console.log('currentLocation', currentLocation);
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.topRow}>
@@ -55,15 +54,7 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
             <Text style={styles.symbol}> | {item.symbol}</Text>
           </View>
           <Text style={styles.price}>
-            {currentLocation?.country &&
-              currentLocation?.code &&
-              item.price?.toLocaleString(
-                currentLocation?.country === 'US' ? 'en-US' : 'fr-FR',
-                {
-                  style: 'currency',
-                  currency: currentLocation?.code?.toUpperCase(),
-                },
-              )}
+            {/* {formatPrice(item.price, currentLocation)} */}
           </Text>
           <View style={styles.fluctuationPriceRow}>
             <Text

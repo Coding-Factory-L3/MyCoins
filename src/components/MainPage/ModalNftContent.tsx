@@ -2,7 +2,8 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
-import {formatPrice} from '../../utils/utils';
+import {convertCurrency, exchangeRates, formatPrice} from '../../utils/utils';
+import useLocation from '../../hooks/useLocation';
 
 interface ModalContentProps {
   item: ModalNftContentProps;
@@ -27,6 +28,8 @@ function ModalNftContent({item}: ModalContentProps): React.JSX.Element {
     return description.replace(/<\/?[^>]+(>|$)/g, '');
   };
 
+  const {currentLocation} = useLocation();
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.topRow}>
@@ -41,7 +44,15 @@ function ModalNftContent({item}: ModalContentProps): React.JSX.Element {
             ]}>
             <Text style={styles.name}>{item.name}</Text>
           </View>
-          <Text style={styles.price}>{formatPrice(item.price, 'US')}</Text>
+          <Text style={styles.price}>
+            {convertCurrency(
+              item.price,
+              'USD',
+              'EUR',
+              exchangeRates,
+              currentLocation,
+            )}
+          </Text>
         </View>
         <Image source={{uri: item.image.small}} style={styles.image} />
       </View>
