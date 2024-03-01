@@ -48,8 +48,8 @@ const useLocation = () => {
         setCurrentLocation((prevState: Currency) => ({
           ...prevState,
           code: currencyCode.code?.toLowerCase() || 'eur',
-          name: currencyCode.name,
-          symbol: currencyCode.symbol,
+          name: currencyCode.name || 'Euro',
+          symbol: currencyCode.symbol || '€',
         }));
       })
       .catch(error => console.log('Error fetching currency:', error));

@@ -2,40 +2,25 @@ import React from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
 
-interface ModalCoinContentProps {
-  item: ModalCoinInterface;
+interface ModalNftContentProps {
+  item: ModalNftInterface;
 }
 
-export interface ModalCoinInterface {
+export interface ModalNftInterface {
   id: string;
   name: string;
   symbol: string;
-  priceAugmented: number;
-  pricePercentage: number;
-  price: number;
   description: string;
   icon: string;
-  currency: string;
 }
 
-function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
-  const isPercentagePositive = item.pricePercentage > 0;
-  const isPriceAugmentedPositive = item.priceAugmented > 0;
-  const formattedPercentage = item.pricePercentage.toFixed(2);
-  const percentageText = isPercentagePositive
-    ? `+${formattedPercentage}`
-    : formattedPercentage;
-  const formattedPriceAugmented = item.priceAugmented.toFixed(4);
-  const priceAugmentedText = isPriceAugmentedPositive
-    ? `+${formattedPriceAugmented}`
-    : formattedPriceAugmented;
-
-  function truncateString(str: string, num: number) {
-    if (str.length <= num) {
-      return str;
-    }
-    return str.slice(0, num) + '...';
-  }
+function ModalNftContent({item}: ModalNftContentProps): React.JSX.Element {
+  // function truncateString(str: string, num: number) {
+  //   if (str.length <= num) {
+  //     return str;
+  //   }
+  //   return str.slice(0, num) + '...';
+  // }
 
   return (
     <ScrollView style={styles.container}>
@@ -45,26 +30,13 @@ function ModalCoinContent({item}: ModalCoinContentProps): React.JSX.Element {
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.symbol}> | {item.symbol}</Text>
           </View>
-          <Text style={styles.price}>{item.price + ' ' + item.currency}</Text>
-          <View style={styles.fluctuationPriceRow}>
-            <Text
-              style={[
-                styles.pricePercentage,
-                // eslint-disable-next-line react-native/no-inline-styles
-                {color: isPercentagePositive ? '#2ecc71' : '#e74c3c'},
-              ]}>
-              {percentageText} %
-            </Text>
-            <Text style={styles.priceAugmented}>
-              {priceAugmentedText} {item.currency} (24h)
-            </Text>
-          </View>
         </View>
         <Image source={{uri: item.icon}} style={styles.image} />
       </View>
       <Text style={styles.descriptionTitle}>Description</Text>
       <Text style={styles.description}>
-        {truncateString(item.description, 1000)}
+        {/* {truncateString(item.description, 1000)} */}
+        {item.description}
       </Text>
     </ScrollView>
   );
@@ -129,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalCoinContent;
+export default ModalNftContent;
