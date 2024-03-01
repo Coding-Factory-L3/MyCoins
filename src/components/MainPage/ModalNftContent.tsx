@@ -2,6 +2,7 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-elements';
+import {formatPrice} from '../../utils/utils';
 
 interface ModalContentProps {
   item: ModalNftContentProps;
@@ -17,19 +18,10 @@ export interface ModalNftContentProps {
     small?: string;
   };
   price: number;
-  currency: string;
+  // currency: string;
 }
 
 function ModalNftContent({item}: ModalContentProps): React.JSX.Element {
-  function truncateString(str: string, num: number) {
-    if (str && num) {
-      if (str.length <= num) {
-        return str;
-      }
-      return str?.slice(0, num) + '...';
-    }
-  }
-
   const formatDescription = (description: string) => {
     // remove html tags from description
     return description.replace(/<\/?[^>]+(>|$)/g, '');
@@ -48,10 +40,8 @@ function ModalNftContent({item}: ModalContentProps): React.JSX.Element {
               },
             ]}>
             <Text style={styles.name}>{item.name}</Text>
-            {item.name.length < 10 && <Text style={styles.symbol}> | </Text>}
-            <Text style={styles.symbol}>{item.symbol}</Text>
           </View>
-          <Text style={styles.price}>{item.price + ' ' + item.currency}</Text>
+          <Text style={styles.price}>{formatPrice(item.price, 'US')}</Text>
         </View>
         <Image source={{uri: item.image.small}} style={styles.image} />
       </View>

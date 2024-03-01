@@ -21,10 +21,11 @@ import {
 import {initializeApp} from 'firebase/app';
 import {
   createUserWithEmailAndPassword,
-  getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  getReactNativePersistence,
+  initializeAuth,
 } from 'firebase/auth';
 import {
   arrayRemove,
@@ -53,8 +54,12 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage), // Provide AsyncStorage for persistence
+});
 const db = getFirestore(app);
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);

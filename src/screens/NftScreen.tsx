@@ -62,6 +62,8 @@ const AllNft: React.FC = () => {
       ]).then((res: any) => {
         const response = res[0];
 
+        console.log('response', JSON.stringify(response, null, 2));
+
         const nftData: ModalNftContentProps = {
           id: response?.id,
           name: response?.name,
@@ -71,8 +73,7 @@ const AllNft: React.FC = () => {
             small: response?.image.small,
           },
           symbol: response?.symbol,
-          price: response?.floor_price[currentLocation?.code || 'eur'],
-          currency: currentLocation?.symbol || '€',
+          price: response?.floor_price?.usd,
         };
 
         setModalData(nftData);
