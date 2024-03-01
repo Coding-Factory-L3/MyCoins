@@ -122,15 +122,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
         };
 
         return (
-          <View
-            key={index}
-            style={[
-              styles.mainItemContainer,
-              {
-                borderRightWidth: state.routes.length - 1 !== index ? 0 : 2,
-                borderRightColor: currentTheme.bottomTab.inactive,
-              },
-            ]}>
+          <View key={index} style={[styles.mainItemContainer]}>
             <TouchableOpacity
               onPress={onPress}
               style={{
@@ -152,6 +144,17 @@ const TabBar = ({state, descriptors, navigation}: any) => {
           </View>
         );
       })}
+      <View
+        style={[
+          {
+            height: 30,
+            width: 2,
+            backgroundColor: currentTheme.bottomTab.inactive,
+            alignSelf: 'center',
+            marginLeft: 5,
+          },
+        ]}
+      />
       <TouchableOpacity
         onPress={toggleTheme}
         style={[styles.mainItemContainer]}>
