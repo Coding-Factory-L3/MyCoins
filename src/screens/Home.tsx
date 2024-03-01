@@ -26,7 +26,7 @@ import ModalNftContent, {
 } from '../components/MainPage/ModalNftContent';
 
 const Home: React.FC = ({navigation}: any) => {
-  const {makeApiCall} = useAuth();
+  const {makeApiCall, logout} = useAuth();
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {ModalComponent} = useModal();
@@ -35,11 +35,14 @@ const Home: React.FC = ({navigation}: any) => {
 
   const [isNftModal, setIsNftModal] = useState(false);
   const [isCoinModal, setIsCoinModal] = useState(false);
+  const [isExchangeModal, setIsExchangeModal] = useState(false);
 
   const [nftModalData, setNftModalData] = useState<ModalNftContentProps | any>(
     {},
   );
   const [coinModalData, setCoinModalData] = useState<ModalContent | any>({});
+
+  const [exchangeModalData, setExchangeModalData] = useState<any>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -160,9 +163,9 @@ const Home: React.FC = ({navigation}: any) => {
           method: 'GET',
           url: `https://api.coingecko.com/api/v3/exchanges/${id}?`,
         }),
-      ]).then(res => {
-        // setModalData(res[0]);
-        // toggleModal();
+      ]).then((res: any) => {
+        setExchangeModalData(res[0]);
+        setIsExchangeModal(true);
       });
     } catch (error) {
       console.error(error);
@@ -195,10 +198,11 @@ const Home: React.FC = ({navigation}: any) => {
               <Text style={{...styles.titre, color: currentTheme.text}}>
                 Trending NFTs
               </Text>
-              <TouchableOpacity>
-                <Text
-                  onPress={() => navigation.push('AllNft', {data: data.nfts})}
-                  style={{color: currentTheme.text, margin: 10}}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('AllNft', {data: data.nfts})
+                }>
+                <Text style={{color: currentTheme.text, margin: 10}}>
                   See All
                 </Text>
               </TouchableOpacity>
@@ -224,9 +228,7 @@ const Home: React.FC = ({navigation}: any) => {
                 Top 7 coins
               </Text>
               <TouchableOpacity>
-                <Text
-                  onPress={() => console.log('See All')}
-                  style={{color: currentTheme.text, margin: 10}}>
+                <Text style={{color: currentTheme.text, margin: 10}}>
                   See All
                 </Text>
               </TouchableOpacity>
@@ -251,12 +253,11 @@ const Home: React.FC = ({navigation}: any) => {
               <Text style={{...styles.titre, color: currentTheme.text}}>
                 Trading platforms
               </Text>
-              <TouchableOpacity>
-                <Text
-                  onPress={() =>
-                    navigation.push('AllExchange', {data: data.nfts})
-                  }
-                  style={{color: currentTheme.text, margin: 10}}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('AllExchange', {data: data.nfts})
+                }>
+                <Text style={{color: currentTheme.text, margin: 10}}>
                   See All
                 </Text>
               </TouchableOpacity>
@@ -268,11 +269,10 @@ const Home: React.FC = ({navigation}: any) => {
               renderItem={({item}) => {
                 return (
                   <ListExchange
-                    // onPress={() => {
-                    //   getExchange({id: item.id});
-                    // }}
+                    onPress={() => {
+                      getExchange({id: item.id});
+                    }}
                     item={item}
-                    // onFavoritePress={onFavoritePress}
                   />
                 );
               }}

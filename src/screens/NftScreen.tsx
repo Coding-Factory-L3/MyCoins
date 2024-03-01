@@ -2,15 +2,13 @@ import React, {useCallback, useEffect, useState} from 'react';
 import ListAllNft from '../components/MainPage/ListAllNft';
 import {useAuth} from '../contexts/AuthContext';
 import {FlatList, View} from 'react-native';
-import useModal from '../hooks/useModal';
-import {Button, Text} from 'react-native-elements';
 import ModalNftContent from '../components/MainPage/ModalNftContent';
 
 const AllNft: React.FC = () => {
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const {makeApiCall} = useAuth();
-  const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
+  // const {toggleModal, ModalWrapper, setModalData, modalData} = useModal();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,8 +41,8 @@ const AllNft: React.FC = () => {
           url: `https://api.coingecko.com/api/v3/nfts/${id}?`,
         }),
       ]).then(res => {
-        setModalData(res[0]);
-        toggleModal();
+        // setModalData(res[0]);
+        // toggleModal();
       });
     } catch (error) {
       console.error(error);
@@ -68,9 +66,9 @@ const AllNft: React.FC = () => {
         )}
         keyExtractor={item => item.id}
       />
-      <ModalWrapper>
+      {/* <ModalWrapper>
         <ModalNftContent item={modalData} />
-      </ModalWrapper>
+      </ModalWrapper> */}
     </View>
   );
 };

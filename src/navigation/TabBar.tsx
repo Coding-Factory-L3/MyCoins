@@ -1,17 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import {
-  View,
-  Pressable,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome5Brands from 'react-native-vector-icons/FontAwesome5';
 import {useTheme} from '../hooks/useTheme';
-
-const {width} = Dimensions.get('window');
 
 const NavigationIcon = ({route, isFocused}: any) => {
   const {currentTheme} = useTheme();
@@ -21,7 +14,7 @@ const NavigationIcon = ({route, isFocused}: any) => {
       return (
         <Feather
           name="home"
-          size={25}
+          size={24}
           color={
             isFocused
               ? currentTheme.bottomTab.active
@@ -33,7 +26,7 @@ const NavigationIcon = ({route, isFocused}: any) => {
       return (
         <Feather
           name="search"
-          size={25}
+          size={24}
           color={
             isFocused
               ? currentTheme.bottomTab.active
@@ -45,7 +38,7 @@ const NavigationIcon = ({route, isFocused}: any) => {
       return (
         <Feather
           name="heart"
-          size={25}
+          size={24}
           color={
             isFocused
               ? currentTheme.bottomTab.active
@@ -57,7 +50,31 @@ const NavigationIcon = ({route, isFocused}: any) => {
       return (
         <Feather
           name="user"
-          size={25}
+          size={24}
+          color={
+            isFocused
+              ? currentTheme.bottomTab.active
+              : currentTheme.bottomTab.inactive
+          }
+        />
+      );
+    case 'AllNft':
+      return (
+        <Feather
+          name="image"
+          size={24}
+          color={
+            isFocused
+              ? currentTheme.bottomTab.active
+              : currentTheme.bottomTab.inactive
+          }
+        />
+      );
+    case 'AllExchange':
+      return (
+        <Feather
+          name="book-open"
+          size={24}
           color={
             isFocused
               ? currentTheme.bottomTab.active
@@ -66,17 +83,7 @@ const NavigationIcon = ({route, isFocused}: any) => {
         />
       );
     default:
-      return (
-        <Feather
-          name="home"
-          size={25}
-          color={
-            isFocused
-              ? currentTheme.bottomTab.active
-              : currentTheme.bottomTab.inactive
-          }
-        />
-      );
+      return null;
   }
 };
 
@@ -120,7 +127,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
             style={[
               styles.mainItemContainer,
               {
-                borderRightWidth: route.name === 'Profile' ? 2 : 0,
+                borderRightWidth: state.routes.length - 1 !== index ? 0 : 2,
                 borderRightColor: currentTheme.bottomTab.inactive,
               },
             ]}>
@@ -130,7 +137,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
                 backgroundColor: isFocused
                   ? currentTheme.primary
                   : 'transparent',
-                borderRadius: 20,
+                borderRadius: 15,
               }}>
               <View
                 style={{
@@ -148,7 +155,7 @@ const TabBar = ({state, descriptors, navigation}: any) => {
       <TouchableOpacity
         onPress={toggleTheme}
         style={[styles.mainItemContainer]}>
-        <Feather name="sun" size={25} color={currentTheme.switch} />
+        <Feather name="sun" size={24} color={currentTheme.switch} />
       </TouchableOpacity>
     </View>
   );
@@ -159,7 +166,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     bottom: 25,
-    borderRadius: 25,
+    borderRadius: 20,
+    paddingHorizontal: 10,
     marginHorizontal: 20,
     shadowOffset: {
       width: 0,

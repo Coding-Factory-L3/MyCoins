@@ -7,6 +7,7 @@ import {useTheme} from '../../hooks/useTheme';
 
 interface MainItemBoxProps {
   item: MainItem;
+  onPress?: () => void;
 }
 
 interface MainItem {
@@ -16,7 +17,10 @@ interface MainItem {
   image: string;
 }
 
-const ListExchange: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
+const ListExchange: React.FC<MainItemBoxProps> = ({
+  item,
+  onPress,
+}: MainItemBoxProps) => {
   const {currentTheme} = useTheme();
   const {updateFavorite, authData} = useAuth();
 
@@ -41,14 +45,15 @@ const ListExchange: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
   };
 
   return (
-    <View
+    <TouchableOpacity
       style={[
         styles.card,
         {
           backgroundColor: currentTheme.primary,
           shadowColor: currentTheme.tertiary,
         },
-      ]}>
+      ]}
+      onPress={onPress}>
       <TouchableOpacity
         style={styles.icon}
         onPress={() => {
@@ -73,7 +78,7 @@ const ListExchange: React.FC<MainItemBoxProps> = ({item}: MainItemBoxProps) => {
           {item.symbol}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

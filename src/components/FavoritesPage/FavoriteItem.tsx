@@ -25,6 +25,7 @@ function FavoriteItem({id, name, image, type}: Props): React.JSX.Element {
 
   return (
     <View
+      key={id}
       style={[
         styles.container,
         {
