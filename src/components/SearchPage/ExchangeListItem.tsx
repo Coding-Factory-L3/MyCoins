@@ -39,7 +39,12 @@ function ExchangeListItem({
         ) : (
           <Image source={{uri: item.icon}} style={styles.icon} />
         )}
-        <Text style={styles.name}>{item.name}</Text>
+        <Text
+          style={[styles.name, {color: currentTheme.text}]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item.name}
+        </Text>
       </View>
       <Text style={[styles.tradeVolume, {color: currentTheme.text}]}>
         {item.tradeVolume.toFixed(2) + ' ' + 'BTC'}
@@ -50,14 +55,12 @@ function ExchangeListItem({
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: theme.colors.light.primary,
     flexDirection: 'row',
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 80,
     borderBottomWidth: 1,
-    // borderBottomColor: theme.colors.light.primary,
     width: '100%',
   },
   icon: {
@@ -68,11 +71,12 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 20,
+    fontSize: 18,
+    maxWidth: 135,
   },
   tradeVolume: {
     marginTop: 5,
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Poppins-Regular',
     textTransform: 'uppercase',
   },

@@ -57,8 +57,6 @@ const Favorites: React.FC = () => {
     })();
   }, [type, authData, makeApiCall]);
 
-  // console.log(JSON.stringify(favorites, null, 2));
-
   return (
     <View
       style={[styles.container, {backgroundColor: currentTheme.background}]}>
@@ -103,6 +101,8 @@ const Favorites: React.FC = () => {
         ) : (
           <View>
             <FlatList
+              contentContainerStyle={{paddingBottom: 150}}
+              showsVerticalScrollIndicator={false}
               data={favorites}
               keyExtractor={item => item?.id}
               renderItem={({item}) => (

@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Image, Text} from 'react-native-elements';
 import theme from '../../../theme';
+import {useTheme} from '../../hooks/useTheme';
 
 interface SearchListItemProps {
   item: Nft;
@@ -17,16 +18,24 @@ export interface Nft {
 }
 
 function NftListItem({item, onPress}: SearchListItemProps): React.JSX.Element {
+  const {currentTheme} = useTheme();
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.container, {borderBottomColor: currentTheme.secondary}]}
+      onPress={onPress}>
       {item.icon === 'missing_small.png' ? (
         <Image source={{uri: undefined}} style={styles.icon} />
       ) : (
         <Image source={{uri: item.icon}} style={styles.icon} />
       )}
       <View>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.symbol}>{item.symbol}</Text>
+        <Text style={[styles.name, {color: currentTheme.text}]}>
+          {item.name}
+        </Text>
+        <Text style={[styles.symbol, {color: currentTheme.text}]}>
+          {item.symbol}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -50,30 +59,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   name: {
-    fontWeight: '600',
-    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 18,
   },
   symbol: {
     marginTop: 5,
-    fontSize: 20,
-    fontWeight: '400',
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
     textTransform: 'uppercase',
-  },
-  priceContainer: {
-    position: 'absolute',
-    flex: 1,
-    right: 0,
-    flexDirection: 'column',
-  },
-  percentage: {
-    textAlign: 'right',
-    fontWeight: '400',
-    fontSize: 20,
-  },
-  price: {
-    textAlign: 'right',
-    fontSize: 20,
-    fontWeight: '600',
   },
 });
 

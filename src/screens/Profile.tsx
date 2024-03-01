@@ -3,10 +3,12 @@ import React from 'react';
 import {Image, Text} from 'react-native-elements';
 import {useAuth} from '../contexts/AuthContext';
 import useLocation from '../hooks/useLocation';
+import {useTheme} from '../hooks/useTheme';
 
 const Profile: React.FC = () => {
   const {authData} = useAuth();
   const {currentLocation} = useLocation();
+  const {currentTheme} = useTheme();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -17,21 +19,25 @@ const Profile: React.FC = () => {
         />
       </View>
 
-      <View style={styles.profile_container}>
+      <View
+        style={[
+          styles.profile_container,
+          {backgroundColor: currentTheme.background},
+        ]}>
         <Image
           source={require('../assets/image/profile_logo.jpeg')}
           style={styles.logo}
         />
-        <Text h3>{authData?.username ? authData.username : 'Username'}</Text>
-        <Text h4>
-          {currentLocation ? currentLocation.city : 'Location not found'}
+        <Text style={[styles.name, {color: currentTheme.text}]}>
+          {authData?.username ? authData.username : 'Username'}
+          {currentLocation ? ' - ' + currentLocation.city : ''}
         </Text>
 
-        <View style={styles.btn_container}>
+        {/* <View style={styles.btn_container}>
           <TouchableOpacity style={styles.edit_container}>
             <Text>Edit Profile</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </SafeAreaView>
   );
@@ -44,6 +50,11 @@ const styles = StyleSheet.create({
   },
   background_container: {
     width: '100%',
+  },
+  name: {
+    fontSize: 24,
+    fontFamily: 'Poppins-Medium',
+    marginTop: 10,
   },
   background_img: {
     height: 228,

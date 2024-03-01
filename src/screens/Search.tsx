@@ -18,7 +18,9 @@ import ExchangeListItem, {
 import ModalCoinContent, {
   ModalCoinInterface,
 } from '../components/SearchPage/ModalCoinContent';
-import ModalExchangeContent, {ModalExchangeInterface} from '../components/SearchPage/ModalExchangeContent';
+import ModalExchangeContent, {
+  ModalExchangeInterface,
+} from '../components/SearchPage/ModalExchangeContent';
 import ModalNftContent, {
   ModalNftInterface,
 } from '../components/SearchPage/ModalNftContent';
@@ -42,6 +44,7 @@ const types = [
 function Search(): React.JSX.Element {
   const {makeApiCall} = useAuth();
   const [loading, setLoading] = useState(true);
+  const [changingType, setChangingType] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [coinModalData, setCoinModalData] = useState({} as ModalCoinInterface);
   const [nftModalData, setNftModalData] = useState({} as ModalNftInterface);
@@ -195,8 +198,6 @@ function Search(): React.JSX.Element {
         url: 'https://api.coingecko.com/api/v3/exchanges?per_page=100&page=1',
       });
 
-      console.log('response', JSON.stringify(response, null, 2));
-
       if (Array.isArray(response)) {
         const exchanges: Exchange[] = response.map((exchange: any) => ({
           id: exchange.id,
@@ -295,7 +296,13 @@ function Search(): React.JSX.Element {
           {types.map((t, i) => (
             <TouchableOpacity
               key={i}
-              onPress={() => setType(t.value)}
+              onPress={() => {
+                setChangingType(true);
+                setType(t.value);
+                setTimeout(() => {
+                  setChangingType(false);
+                }, 1000);
+              }}
               style={[
                 styles.flag,
                 {
@@ -322,13 +329,14 @@ function Search(): React.JSX.Element {
             </TouchableOpacity>
           ))}
         </View>
-        {loading ? (
+        {loading || changingType ? (
           <ActivityIndicator size="large" color={currentTheme.text} />
         ) : (
           <>
             <FlatList
               data={filteredData}
               contentContainerStyle={{paddingBottom: 200}}
+              showsVerticalScrollIndicator={false}
               keyExtractor={item => item.id}
               renderItem={({item}) => {
                 if (type === 'coins') {

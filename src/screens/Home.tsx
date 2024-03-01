@@ -208,6 +208,7 @@ const Home: React.FC = ({navigation}: any) => {
             </View>
             <FlatList
               horizontal={true}
+              showsVerticalScrollIndicator={false}
               data={data.trendingNfts}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
@@ -234,6 +235,7 @@ const Home: React.FC = ({navigation}: any) => {
             </View>
             <FlatList
               horizontal={true}
+              showsVerticalScrollIndicator={false}
               data={data.coin}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
@@ -263,6 +265,7 @@ const Home: React.FC = ({navigation}: any) => {
             </View>
             <FlatList
               horizontal={true}
+              showsVerticalScrollIndicator={false}
               data={data.exchange}
               keyExtractor={(item: any) => item.id}
               renderItem={({item}) => {
